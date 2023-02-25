@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Hide "last login" line when starting a new terminal session
+touch $HOME/.hushlogin
+
+# Install zsh
+echo 'Install oh-my-zsh'
+echo '-----------------'
+rm -rf $HOME/.oh-my-zsh
+curl -L https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+
+# Configure GIT
+git config --global --add --bool push.autoSetupRemote true
+
+# Install node.js via fnm 
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell --force-install
+
+# Requried node deps
+npm install -g @volar/vue-language-server
+

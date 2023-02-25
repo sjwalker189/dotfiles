@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+INSTALL_PATH="~/.local/share/nvim/site/pack/packer/start"
+
+echo ''
+echo 'Linking config'
+echo '--------------'
+rm -rf ~/.config/nvim
+ln -s $SCRIPT_DIR ~/.config/nvim
+
+echo ''
+echo 'Installing packer'
+echo '-----------------'
+rm -rf $INSTALL_PATH/packer.nvim
+git clone --depth 1 https://github.com/wbthomason/packer.nvim $INSTALL_PATH/packer.nvim
+
+echo ''
+echo 'Installing editorconfig'
+echo '-----------------------'
+rm -rf $INSTALL_PATH/editorconfig.nvim
+git clone --depth 1 https://github.com/gpanders/editorconfig.nvim $INSTALL_PATH/editorconfig.nvim
