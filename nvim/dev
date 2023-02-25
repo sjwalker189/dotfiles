@@ -1,22 +1,16 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-INSTALL_PATH="~/.local/share/nvim/site/pack/packer/start"
+SCRIPT_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+INSTALL_PATH="$HOME/.local/share/nvim/site/pack/packer/start"
 
-echo ''
-echo 'Linking config'
-echo '--------------'
+# Link config 
 rm -rf ~/.config/nvim
-ln -s $SCRIPT_DIR ~/.config/nvim
+ln -s $SCRIPT_PATH ~/.config/nvim
 
-echo ''
-echo 'Installing packer'
-echo '-----------------'
+# Install packer (package manager)
 rm -rf $INSTALL_PATH/packer.nvim
 git clone --depth 1 https://github.com/wbthomason/packer.nvim $INSTALL_PATH/packer.nvim
 
-echo ''
-echo 'Installing editorconfig'
-echo '-----------------------'
+# Install editorconfig (detect editor preferences)
 rm -rf $INSTALL_PATH/editorconfig.nvim
 git clone --depth 1 https://github.com/gpanders/editorconfig.nvim $INSTALL_PATH/editorconfig.nvim

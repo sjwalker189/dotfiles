@@ -1,20 +1,71 @@
 #!/bin/bash
 
-# Hide "last login" line when starting a new terminal session
-touch $HOME/.hushlogin
+MACOS=false
+if [ $OSTYPE = "darwin" ] ; then
+    $MACOS=true
+fi
+
+if $MACOS; then
+    echo 'MacOS Setup'
+    # Hide "last login" line when starting a new terminal session
+    touch $HOME/.hushlogin
+    # Install homebrew
+    # Install xcode
+else 
+    echo 'Linux Setup'
+    sudo apt update
+    sudo apt upgrade
+    sudo apt install build-essential git file wget curl gcc
+    sudo apt install zsh
+    sudo apt autoremove
+fi
+
+# Configure GIT
+echo 'Configuring Git'
+echo '-------------'
+git config --global user.name "Sam Walker"
+git config --global --add --bool push.autoSetupRemote true
 
 # Install zsh
-echo 'Install oh-my-zsh'
+echo 'Installing oh-my-zsh'
 echo '-----------------'
 rm -rf $HOME/.oh-my-zsh
 curl -L https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
 
-# Configure GIT
-git config --global --add --bool push.autoSetupRemote true
+# Instal KIITY
+echo 'Installing Kitty'
+echo '----------------'
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+source ./kitty/dev
 
-# Install node.js via fnm 
+# Install Deno
+echo 'Installing Deno'
+echo '---------------'
+curl -fsSL https://deno.land/x/install/install.sh | sh
+
+
+# Install Node
+echo 'Installing Node'
+echo '---------------'
 curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell --force-install
+fnm install
+npm install -g yarn
+npm install -g @volar/vue-language-server # Required for neovim volar LSP plugin
 
-# Requried node deps
-npm install -g @volar/vue-language-server
 
+# Install Rust
+echo 'Installing Rust'
+echo '---------------'
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+
+# Install and configure neovim
+echo 'Installing neovim' 
+echo '-----------------'
+if $MACOS; then
+    brew install neovim
+    brew instxall ripgrep
+else
+    sudo apt install neovim ripgrep
+fi
+source ./nvim/dev
