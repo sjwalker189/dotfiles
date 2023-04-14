@@ -14,7 +14,8 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Open float
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
 -- Save
-vim.keymap.set("n", "<leader>w", "<CMD>update<CR>")
+vim.keymap.set("n", "<leader>w", "<CMD>update<CR>", { desc = "[W]rite File" })
+vim.keymap.set("n", "<C-s>", "<CMD>update<CR>", { desc = "[S]ave File" })
 
 -- Quit
 vim.keymap.set("n", "<leader>q", "<CMD>q<CR>")
@@ -23,14 +24,16 @@ vim.keymap.set("n", "<leader>q", "<CMD>q<CR>")
 vim.keymap.set("i", "jk", "<ESC>")
 
 -- Format code
-vim.keymap.set("n", "<S-C-i>", vim.lsp.buf.format)
+vim.keymap.set("n", "<S-C-i>", "<CMD>Neoformat<CR>", { desc = "Format buffer" })
 
---
+
+vim.keymap.set("n", "<S-C-e>", "<CMD>Ex<CR>")
+
 -- Window Splits
 vim.keymap.set("n", "<C-\\>", "<CMD>vsplit<CR>", { desc = "Open vertical split" })
 vim.keymap.set("n", "<C-Bar>", "<CMD>split<CR>", { desc = "Open horizontal split" })
---
--- Window Navigation
+  
+-- Window Navigations
 vim.keymap.set("n", "<C-h>", "<C-w>h")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 vim.keymap.set("n", "<C-k>", "<C-w>k")
@@ -41,10 +44,6 @@ vim.keymap.set("n", "<C-Left>", "<C-w><")
 vim.keymap.set("n", "<C-Right>", "<C-w>>")
 vim.keymap.set("n", "<C-Up>", "<C-w>+")
 vim.keymap.set("n", "<C-Down>", "<C-w>-")
-
--- Buffer
-vim.keymap.set("n", "<TAB>", "<CMD>bnext<CR>")
-vim.keymap.set("n", "<S-TAB>", "<CMD>bprevious<CR>")
 
 vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")
@@ -68,5 +67,5 @@ vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "[S]earch in-word" })
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })

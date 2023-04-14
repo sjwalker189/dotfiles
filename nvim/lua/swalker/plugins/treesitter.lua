@@ -4,12 +4,22 @@ return {
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
+      'windwp/nvim-ts-autotag',
+      'JoosepAlviste/nvim-ts-context-commentstring',
     },
     build        = ":TSUpdate",
     event        = { "BufReadPost", "BufNewFile" },
     config       = function(_, opts)
       pcall(require('nvim-treesitter.install').update { with_sync = true })
       pcall(require('nvim-treesitter.configs').setup, opts)
+
+      require('mini.comment').setup({
+        hooks = {
+          pre = function()
+            require('ts_context_commentstring.internal').update_commentstring({})
+          end,
+        },
+      })
     end,
     opts         = {
       sync_install = false,
@@ -45,6 +55,13 @@ return {
           scope_incremental = '<c-s>',
           node_decremental = '<M-space>',
         },
+      },
+      autotag = {
+        enable = true,
+      },
+      context_commentstring = {
+        enable = true,
+        enable_autocmd = false,
       },
       textobjects = {
         select = {
