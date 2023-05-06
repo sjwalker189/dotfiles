@@ -9,7 +9,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
-  nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+  nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame Token')
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
@@ -36,9 +36,10 @@ local on_attach = function(client, bufnr)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
 end
-
+local lspconfig = require("lspconfig")
 local servers = {
   rust_analyzer = {},
+  denols = {},
   tsserver = {},
   tailwindcss = {},
   bashls = {},
@@ -77,11 +78,24 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    require('lspconfig')[server_name].setup {
+    local options = {
       capabilities = capabilities,
       on_attach = on_attach,
       settings = servers[server_name],
     }
+
+    -- -- Server specific options
+    if server_name == "tsserver" then
+      options["root_dir"] = lspconfig.util.root_pattern("package.json")
+      options["single_file_support"] = false
+    end
+
+    if server_name == "denols" then
+      options["root_dir"] = lspconfig.util.root_pattern("deno.json", "deno.jsonc")
+    end
+
+    -- Configure the language server
+    require('lspconfig')[server_name].setup(options)
   end,
 }
 

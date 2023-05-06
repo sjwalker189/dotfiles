@@ -26,11 +26,9 @@ echo '-------------'
 git config --global user.name "Sam Walker"
 git config --global --add --bool push.autoSetupRemote true
 
-# Install zsh
-echo 'Installing oh-my-zsh'
-echo '-----------------'
-rm -rf $HOME/.oh-my-zsh
-curl -L https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+
+# Starship (Better Bash Experience)
+curl -sS https://starship.rs/install.sh | sh
 
 # Instal KIITY
 echo 'Installing Kitty'
