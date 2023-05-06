@@ -14,5 +14,5 @@ return {
       'folke/neodev.nvim',
     },
   },
+  { 'MunifTanjim/prettier.nvim' },
 }
-

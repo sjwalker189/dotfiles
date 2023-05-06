@@ -1,3 +1,7 @@
+vim.scriptencoding = 'utf-8'
+vim.opt.encoding = 'utf-8'
+vim.opt.fileencoding = 'utf-8'
+
 -- Set highlight on search
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
@@ -25,6 +29,7 @@ vim.o.smartcase = true
 
 -- Keep signcolumn on by default
 vim.wo.signcolumn = 'yes'
+vim.wo.number = true
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -40,6 +45,8 @@ vim.opt.expandtab = true
 -- Wrapping etc
 vim.opt.scrolloff = 15
 -- vim.opt.isfname:append("@-@")
+vim.opt.path:append { '**' } -- Finding files - Search down into subfolders
+vim.opt.wildignore:append{ '*/node_modules/*', '*/vendor/*' }
 vim.opt.colorcolumn = "120"
 vim.opt.wrap = false
 vim.opt.autowrite = true

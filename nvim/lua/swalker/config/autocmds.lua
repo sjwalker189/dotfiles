@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 
 -- Enable treesitter powered indent for vue files only
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "vue",
-  command = "TSBufEnable indent",
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "vue",
+--   command = "TSBufEnable indent",
+-- })
