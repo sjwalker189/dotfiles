@@ -19,12 +19,12 @@ local color_mode = "dark"
 function ToggleColorMode()
   if color_mode == "dark" then
     color_mode = "light"
-    vim.o.background = "light"
     vim.cmd("colorscheme " .. light_theme)
+    vim.o.background = "light"
   else
     color_mode = "dark"
-    vim.o.background = "dark"
     vim.cmd("colorscheme " .. dark_theme)
+    vim.o.background = "dark"
   end
 end
 
