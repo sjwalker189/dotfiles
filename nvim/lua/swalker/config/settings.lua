@@ -13,12 +13,11 @@ vim.o.mouse = 'a'
 -- Sync clipboard between OS and Neovim.
 vim.o.clipboard = 'unnamedplus'
 
--- Enable break indent
--- vim.o.breakindent = false
-
 -- Save undo history
-vim.o.undofile = true
-vim.o.swapfile = false
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undofile = true
 
 -- Case insensitive searching UNLESS /C or capital in search
 vim.o.ignorecase = true
@@ -40,9 +39,12 @@ vim.opt.expandtab = true
 
 -- Wrapping etc
 vim.opt.scrolloff = 15
+-- vim.opt.isfname:append("@-@")
 vim.opt.colorcolumn = "120"
 vim.opt.wrap = false
 vim.opt.autowrite = true
 vim.opt.spelllang = { "en" }
 vim.opt.splitbelow = true
 vim.opt.splitright = true
+
+vim.opt.updatetime = 1000

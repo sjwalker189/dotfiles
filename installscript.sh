@@ -69,7 +69,7 @@ if $MACOS; then
     brew install fd
     brew install gnu-sed
 else
-    sudo apt install neovim ripgrep fd-find
+    sudo apt install neovim ripgrep fd-find xclip
 
     # Related deps 
     LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')

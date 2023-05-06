@@ -1,4 +1,6 @@
 -- [[ Basic Keymaps ]]
+--
+-- vim.api.nvim_set_option("clipboard","unnamed")
 
 -- Keymaps for better default experience
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
@@ -24,15 +26,12 @@ vim.keymap.set("n", "<leader>q", "<CMD>q<CR>")
 vim.keymap.set("i", "jk", "<ESC>")
 
 -- Format code
-vim.keymap.set("n", "<S-C-i>", "<CMD>Neoformat<CR>", { desc = "Format buffer" })
-
-
-vim.keymap.set("n", "<S-C-e>", "<CMD>Ex<CR>")
+vim.keymap.set("n", "<S-C-i>", "<CMD>Format<CR>", { desc = "Format buffer" })
 
 -- Window Splits
 vim.keymap.set("n", "<C-\\>", "<CMD>vsplit<CR>", { desc = "Open vertical split" })
 vim.keymap.set("n", "<C-Bar>", "<CMD>split<CR>", { desc = "Open horizontal split" })
-  
+
 -- Window Navigations
 vim.keymap.set("n", "<C-h>", "<C-w>h")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
@@ -62,6 +61,7 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
+
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")

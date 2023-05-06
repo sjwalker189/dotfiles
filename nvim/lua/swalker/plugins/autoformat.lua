@@ -62,14 +62,16 @@ return {
                 return
               end
 
-              vim.cmd("Neoformat")
-
-              -- vim.lsp.buf.format {
-              --   async = false,
-              --   filter = function(c)
-              --     return c.id == client.id
-              --   end,
-              -- }
+              if client.name == "volar" then
+                vim.cmd("Neoformat")
+              else
+                vim.lsp.buf.format {
+                  async = false,
+                  filter = function(c)
+                    return c.id == client.id
+                  end,
+                }
+              end
             end,
           })
         end,

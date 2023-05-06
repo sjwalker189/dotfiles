@@ -12,10 +12,20 @@ require("mini.indentscope").setup({
   }
 })
 
-function Light()
-  vim.o.background = "light"
+local dark_theme = "nordic"
+local light_theme = "rose-pine"
+local color_mode = "dark"
+
+function ToggleColorMode()
+  if color_mode == "dark" then
+    color_mode = "light"
+    vim.o.background = "light"
+    vim.cmd("colorscheme " .. light_theme)
+  else
+    color_mode = "dark"
+    vim.o.background = "dark"
+    vim.cmd("colorscheme " .. dark_theme)
+  end
 end
 
-function Dark()
-  vim.o.background = "dark"
-end
+vim.keymap.set("n", "<leader>kt", ToggleColorMode, { desc = "Toggle color mode" })
