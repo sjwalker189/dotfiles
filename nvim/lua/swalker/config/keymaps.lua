@@ -15,6 +15,9 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnos
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
+
+vim.keymap.set("n", "<leader>l", "<CMD>Lazy<CR>", { desc = "[L]azy panel" })
+
 -- Save
 vim.keymap.set("n", "<leader>w", "<CMD>update<CR>", { desc = "[W]rite File" })
 vim.keymap.set("n", "<C-s>", "<CMD>update<CR>", { desc = "[S]ave File" })
@@ -26,7 +29,13 @@ vim.keymap.set("n", "<leader>q", "<CMD>q<CR>")
 vim.keymap.set("i", "jk", "<ESC>")
 
 -- Format code
-vim.keymap.set("n", "<S-C-i>", "<CMD>Format<CR>", { desc = "Format buffer" })
+vim.keymap.set("n", "<S-C-i>", function()
+  vim.lsp.buf.format()
+end, { desc = "Format buffer" })
+
+-- Buffers (mini.buffremove)
+vim.keymap.set("n", "<C-w>", "<CMD>bdelete<CR>", { desc = "Close buffer" })
+vim.keymap.set("n", "<C-W>", "<CMD>bdelete!<CR>", { desc = "Close buffer without saving" })
 
 -- Window Splits
 vim.keymap.set("n", "<C-\\>", "<CMD>vsplit<CR>", { desc = "Open vertical split" })
