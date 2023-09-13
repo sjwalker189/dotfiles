@@ -19,11 +19,13 @@ return {
           javascriptreact = { util.withl(prettierd, 'javascriptreact') },
           typescript = { util.withl(prettierd, 'typescript') },
           typescriptreact = { util.withl(prettierd, 'typescriptreact') },
+          json = { util.withl(prettierd, 'json') },
         },
       }
 
       -- Keymaps
       vim.keymap.set('n', '<S-C-i>', '<CMD>Format<CR>', { desc = 'Format buffer' })
+      vim.keymap.set('n', '<leader>f', '<CMD>Format<CR>', { desc = 'Format buffer' })
     end,
   },
 }
