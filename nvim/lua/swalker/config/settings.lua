@@ -2,6 +2,8 @@ vim.scriptencoding = 'utf-8'
 vim.opt.encoding = 'utf-8'
 vim.opt.fileencoding = 'utf-8'
 
+vim.opt.guicursor = ""
+
 -- Set highlight on search
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
@@ -9,7 +11,6 @@ vim.opt.grepprg = "rg --no-heading --vimgrep --hidden --iglob '!.DS_Store' --igl
 vim.opt.grepformat = "%f:%l:%c:%m"
 
 -- Make line numbers default
-vim.wo.number = true
 vim.opt.nu = true
 vim.opt.relativenumber = true
 

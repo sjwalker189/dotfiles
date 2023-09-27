@@ -12,7 +12,7 @@ return {
         -- qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
         mappings = {
           ['<C-u>'] = false,
-          ['<C-d>'] = false,
+         ['<C-d>'] = false,
         },
       },
       extensions = {
