@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+
+brew install koekeishiya/formulae/yabai
+brew install koekeishiya/formulae/skhd
+
+# cp .yabairc  ~/.yabarc
+# cp .skhdrc  ~/.skhdrc
+
+yabai --start-service
+skhd  --start-service
+
+# Disable animations when opening and closing windows.
+defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+
+# Accelerated playback when adjusting the window size.
+defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
