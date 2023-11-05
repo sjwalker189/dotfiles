@@ -1,10 +1,14 @@
 return {
   {
-    'kvrohit/mellow.nvim',
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
-    lazy = false,
     config = function()
-      vim.cmd.colorscheme 'mellow'
+      require('catppuccin').setup {
+        -- transparent_background = true,
+        compile_path = vim.fn.stdpath 'cache' .. '/catppuccin',
+      }
+      vim.cmd 'colorscheme catppuccin-frappe'
     end,
   },
 }
