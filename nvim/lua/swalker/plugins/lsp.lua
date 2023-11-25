@@ -6,7 +6,7 @@ return {
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
+      { 'williamboman/mason.nvim', config = true, },
       'williamboman/mason-lspconfig.nvim',
       { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
       'folke/neodev.nvim',
@@ -36,11 +36,12 @@ return {
 
         nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
         nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-        nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
         nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
         nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-        nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-        nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+        -- Replace with snap
+        -- nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+        -- nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+        -- nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
       end
 
       -- Enable the following language servers
@@ -56,6 +57,9 @@ return {
         gopls = {},
         tsserver = {},
         html = { filetypes = { 'html', 'twig', 'hbs' } },
+        eslint = {
+          workingDirectory = { mode = "auto" },
+        },
         lua_ls = {
           Lua = {
             workspace = { checkThirdParty = false },

@@ -1,6 +1,7 @@
 return {
   {
     'mhartington/formatter.nvim',
+    lazy = true,
     config = function()
       local util = require 'formatter.util'
       local prettierd = require 'formatter.defaults.prettierd'
@@ -20,12 +21,16 @@ return {
           typescript = { util.withl(prettierd, 'typescript') },
           typescriptreact = { util.withl(prettierd, 'typescriptreact') },
           json = { util.withl(prettierd, 'json') },
+          ['*'] = {
+            -- "formatter.filetypes.any" defines default configurations for any
+            -- filetype
+            require('formatter.filetypes.any').remove_trailing_whitespace,
+          },
         },
       }
 
       -- Keymaps
-      vim.keymap.set('n', '<S-C-i>', '<CMD>Format<CR>', { desc = 'Format buffer' })
-      vim.keymap.set('n', '<leader>f', '<CMD>Format<CR>', { desc = 'Format buffer' })
+      vim.keymap.set('n', '<S-C-i>', '<CMD>Format<CR>', { desc = 'Format buffer', silent = true })
     end,
   },
 }

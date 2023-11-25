@@ -8,7 +8,7 @@ return {
         -- transparent_background = true,
         compile_path = vim.fn.stdpath 'cache' .. '/catppuccin',
       }
-      vim.cmd 'colorscheme catppuccin-frappe'
+      vim.cmd 'colorscheme catppuccin-macchiato'
     end,
   },
 }

@@ -12,6 +12,9 @@ return {
 
       -- Adds a number of user-friendly snippets
       -- 'rafamadriz/friendly-snippets',
+      --
+      -- Add pictograms to LSP completion
+      'onsails/lspkind.nvim',
     },
 
     config = function()
@@ -27,6 +30,22 @@ return {
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
+          end,
+        },
+        completion = {
+          keyword_length = 3,
+        },
+        formatting = {
+          format = function(entry, vim_item)
+            if vim.tbl_contains({ 'path' }, entry.source.name) then
+              local icon, hl_group = require('nvim-web-devicons').get_icon(entry:get_completion_item().label)
+              if icon then
+                vim_item.kind = icon
+                vim_item.kind_hl_group = hl_group
+                return vim_item
+              end
+            end
+            return require('lspkind').cmp_format {}(entry, vim_item)
           end,
         },
         window = {
