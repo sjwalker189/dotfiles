@@ -14,3 +14,9 @@ defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 
 # Accelerated playback when adjusting the window size.
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+
+defaults write com.apple.finder DisableAllAnimations -bool true
+killall Finder # or logout and login
+
+# to reset system defaults, delete the key instead
+# defaults delete com.apple.finder DisableAllAnimations

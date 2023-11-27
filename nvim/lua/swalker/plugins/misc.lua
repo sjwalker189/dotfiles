@@ -8,7 +8,7 @@ return {
   'editorconfig/editorconfig-vim',
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {}, lazy=true },
+  { 'numToStr/Comment.nvim', opts = {} },
 
   {
     'christoomey/vim-tmux-navigator',
