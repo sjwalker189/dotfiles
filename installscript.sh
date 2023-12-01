@@ -27,6 +27,10 @@ echo 'Installing Rust'
 echo '---------------'
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
+# TODO:
+# resource bashrc (for cargo to be available)
+# create and source .bash_profile
+
 # Instal KIITY
 echo 'Installing Kitty'
 echo '----------------'
@@ -50,8 +54,14 @@ npm install -g eslint @volar/vue-language-server # Required for neovim volar LSP
 # Install and configure neovim
 echo 'Installing neovim' 
 echo '-----------------'
-    sudo apt install ripgrep fd-find xclip
-    cargo install --git https://github.com/MordechaiHadad/bob.git
-   mkdir -p ~/.local/share/bash-completion/completions
-bob complete bash >> ~/.local/share/bash-completion/completions/bob
+sudo apt install ripgrep fd-find xclip
 
+# Install bob version manager for neovim
+cargo install --git https://github.com/MordechaiHadad/bob.git
+mkdir -p ~/.local/share/bash-completion/completions
+bob complete bash >> ~/.local/share/bash-completion/completions/bob
+bob install nightly
+bob use nightly
+
+# Neovim LSP dependencies
+cargo install stylua

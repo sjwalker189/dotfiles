@@ -1,6 +1,7 @@
 return {
   {
     'mhartington/formatter.nvim',
+    lazy = true,
     config = function()
       local util = require 'formatter.util'
       local prettierd = require 'formatter.defaults.prettierd'

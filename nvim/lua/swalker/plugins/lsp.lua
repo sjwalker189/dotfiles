@@ -1,4 +1,11 @@
 return {
+
+  {
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {},
+  },
+
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
   {
@@ -6,9 +13,9 @@ return {
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true, },
+      { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
       'folke/neodev.nvim',
     },
     config = function()
@@ -38,33 +45,15 @@ return {
         nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
         nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
         nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-        -- Replace with snap
-        -- nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-        -- nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-        -- nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-      end
 
-      -- Enable the following language servers
-      --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-      --
-      --  Add any additional override configuration in the following tables. They will be passed to
-      --  the `settings` field of the server config. You must look up that documentation yourself.
-      --
-      --  If you want to override the default filetypes that your language server will attach to you can
-      --  define the property 'filetypes' to the map in question.
-      local servers = {
-        tsserver = {},
-        html = { filetypes = { 'html', 'twig', 'hbs' } },
-        eslint = {
-          workingDirectory = { mode = "auto" },
-        },
-        lua_ls = {
-          Lua = {
-            workspace = { checkThirdParty = false },
-            telemetry = { enable = false },
-          },
-        },
-      }
+        -- Create a command `:Format` local to the LSP buffer
+        vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+          vim.lsp.buf.format()
+        end, { desc = 'Format current buffer with LSP' })
+
+        -- Keymaps
+        vim.keymap.set('n', '<S-C-i>', '<CMD>Format<CR>', { desc = 'Format buffer', silent = true })
+      end
 
       -- Setup neovim lua configuration
       require('neodev').setup()
@@ -76,19 +65,64 @@ return {
       -- Ensure the servers above are installed
       local mason_lspconfig = require 'mason-lspconfig'
 
-      mason_lspconfig.setup {
-        ensure_installed = vim.tbl_keys(servers),
+      local lsp_handler_defaults = {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = {},
       }
 
-      mason_lspconfig.setup_handlers {
-        function(server_name)
-          require('lspconfig')[server_name].setup {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = servers[server_name],
-            filetypes = (servers[server_name] or {}).filetypes,
-          }
-        end,
+      local with_defaults = function(lsp_handler_config)
+        return function(server)
+          require('lspconfig')[server].setup(vim.tbl_extend('force', lsp_handler_defaults, lsp_handler_config or {}))
+        end
+      end
+
+      mason_lspconfig.setup {
+        automatic_installation = false,
+        ensure_installed = {
+          -- Web development
+          'html',
+          'eslint',
+          'volar',
+
+          -- Common
+          'lua_ls',
+          'bashls',
+        },
+        handlers = {
+          --
+          -- Web Development
+          --
+          html = with_defaults {
+            filetypes = { 'html', 'twig', 'hbs' },
+          },
+
+          eslint = with_defaults {
+            settings = {
+              workingDirectory = { mode = 'auto' },
+            },
+          },
+
+          volar = with_defaults {
+            filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'json' },
+            settings = {
+              workingDirectory = { mode = 'auto' },
+            },
+          },
+
+          --
+          -- Other languages
+          --
+          lua_ls = with_defaults {
+            settings = {
+              Lua = {
+                workspace = { checkThirdParty = false },
+                telemetry = { enable = false },
+              },
+            },
+          },
+          bashls = with_defaults {},
+        },
       }
     end,
   },
