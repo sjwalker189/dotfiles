@@ -1,4 +1,5 @@
 return {
+
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -8,10 +9,11 @@ return {
     build = ':TSUpdate',
     config = function()
       require('nvim-treesitter').setup()
+
       vim.defer_fn(function()
         require('nvim-treesitter.configs').setup {
           -- Add languages to be installed here that you want installed for treesitter
-          ensure_installed = { 'php', 'go', 'lua', 'tsx', 'typescript', 'vimdoc', 'vim' },
+          ensure_installed = { 'php', 'go', 'lua', 'tsx', 'typescript', 'vimdoc', 'vim', 'blade', },
           sync_install = false,
           auto_install = true,
           ignore_install = {},

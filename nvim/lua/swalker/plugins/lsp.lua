@@ -77,22 +77,14 @@ return {
         end
       end
 
-      mason_lspconfig.setup {
-        automatic_installation = false,
-        ensure_installed = {
-          -- Web development
-          'html',
-          'eslint',
-          'volar',
-
-          -- Common
-          'lua_ls',
-          'bashls',
-        },
-        handlers = {
+      local servers = {
           --
           -- Web Development
           --
+          -- typescript/javascript lsp is configured using the typescript-tools
+          -- plugin as it's much better than tsserver.
+          phpactor = with_defaults {},
+          cssls = with_defaults {},
           html = with_defaults {
             filetypes = { 'html', 'twig', 'hbs' },
           },
@@ -102,13 +94,13 @@ return {
               workingDirectory = { mode = 'auto' },
             },
           },
-
           volar = with_defaults {
             filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'json' },
             settings = {
               workingDirectory = { mode = 'auto' },
             },
           },
+
 
           --
           -- Other languages
@@ -122,7 +114,12 @@ return {
             },
           },
           bashls = with_defaults {},
-        },
+      }
+
+      mason_lspconfig.setup {
+        automatic_installation = false,
+        ensure_installed = vim.tbl_keys(servers),
+        handlers = servers,
       }
     end,
   },
