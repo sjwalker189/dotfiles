@@ -1,0 +1,87 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 42,
+
+    // Choose the order of the modules
+    "modules-left": ["custom/power", "sway/workspaces",  "sway/mode", "custom/spotify"],
+    "modules-center": [ "sway/window" ],
+    "modules-right": [ "pulseaudio", "bluetooth", "network", "clock"],
+    
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": false,
+        //"format": "{icon}",
+        "format-icons": {
+            "1:web": "",
+            "2:code": "",
+            "3:term": "",
+            "4:work": "",
+            "5:teams": "󰊻",
+            "6:music": "",
+            "7:docs": "",
+            "urgent": "",
+            "focused": "",
+            "default": ""
+        }
+    },
+    "sway/mode": {
+        "format": "{}"
+    },
+     "clock": {
+        // :man date for more details 
+        "format": "{:%a %d %b  %I:%M %p}"
+    },
+    "cpu": {
+        "format": "C: {usage}%"
+    },
+    "memory": {
+        "format": "M: {}%"
+    },
+    "network": {
+        "format-wifi": "󰖩",
+        "format-disconected": "󰖪",
+        "tooltip":false
+        // TODO: on click disconnect / reconnect
+    },
+
+    "pulseaudio": {
+        "scroll-step": 5,
+        "format": "{icon}  {volume}%",
+        "format-bluetooth": "{volume}% {icon}",
+        "format-muted": " Mute",
+        "format-icons": {
+            "headphones": "",
+            "handsfree": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", ""]
+        },
+        "on-click-right": "pavucontrol"
+    },
+
+    "bluetooth": {
+        "format": "{icon}",
+        "format-icons": {
+            "enabled": "",
+            "disabled": "!"
+        }
+    },
+
+    "custom/spotify": {
+        "format": " {}",
+        "max-length": 40,
+        "interval": 1, 
+        "exec": "$HOME/.config/waybar/mediaplayer.sh 2> /dev/null", // Script in resources folder
+        "exec-if": "pgrep spotify",
+        "on-click": "playerctl play-pause"
+    },
+
+     "custom/power": {
+       "format": "",
+       "on-click": "rofi -show power-menu -modi power-menu:~/.local/bin/rofi-power-menu",
+       "tooltip":false
+    }
+}

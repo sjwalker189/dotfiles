@@ -1,0 +1,153 @@
+/*
+*
+* Catppuccin Mocha palette
+* Maintainer: rubyowo
+*
+*/
+
+@define-color base #1e1e2e;
+@define-color mantle #181825;
+@define-color crust #11111b;
+
+@define-color text #cdd6f4;
+@define-color subtext0 #a6adc8;
+@define-color subtext1 #bac2de;
+
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+
+@define-color overlay0 #6c7086;
+@define-color overlay1 #7f849c;
+@define-color overlay2 #9399b2;
+
+@define-color blue #89b4fa;
+@define-color lavender #b4befe;
+@define-color sapphire #74c7ec;
+@define-color sky #89dceb;
+@define-color teal #94e2d5;
+@define-color green #a6e3a1;
+@define-color yellow #f9e2af;
+@define-color peach #fab387;
+@define-color maroon #eba0ac;
+@define-color red #f38ba8;
+@define-color mauve #cba6f7;
+@define-color pink #f5c2e7;
+@define-color flamingo #f2cdcd;
+@define-color rosewater #f5e0dc;
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Noto Sans";
+    font-size: 20px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    /* background-color: @crust; */
+    /* color: @text; */
+}
+
+#window {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+#workspaces {
+    padding: 0 10px;
+}
+
+#workspaces button {
+    padding: 0 10px;
+    background: @crust;
+    color: @subtext1;
+    border: 1px solid transparent;
+}
+
+#workspaces button.focused {
+    background: @surface0;
+    border-color: @surface0;
+}
+
+
+#clock,
+#network,
+#pulseaudio,
+#tray,
+#bluetooth,
+#cpu,
+#memory,
+#mode {
+    padding: 0 0;
+    margin: 0 8px;
+}
+
+#clock {
+    padding-right: 15px;
+}
+
+#network {
+    padding: 0 10px 0 5px;
+}
+
+#bluetooth {
+    padding: 0 5px 0 0;
+}
+
+
+#mode {
+    color: @crust;
+    background: @mauve;
+    padding: 0 10px;
+}
+
+#custom-power {
+    font-size: 26px;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: @crust;
+    }
+}
+
+#cpu {}
+
+#memory {}
+
+#network {}
+
+#network.disconnected {
+    background: #f53c3c;
+}
+
+#pulseaudio {}
+
+#pulseaudio.muted {}
+
+#custom-power {
+    margin: 0 0;
+    padding-left: 15px;
+}
+
+#custom-spotify {
+    font-size: 19px;
+    color: @green;
+    margin-left: 15px;
+}
+
+#tray {}
+
+tooltip {
+    background: @crust;
+    border: 1px solid @mantle;
+    border-radius: 10px;
+    padding: 0 35px;
+}
+
+tooltip label {
+    color: @rosewatr;
+}

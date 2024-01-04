@@ -1,0 +1,11 @@
+lastupdatecheck: 0
+recentrepos:
+- /home/swalker/aviat/provision-plus
+- /home/swalker/dev/saga
+- /home/swalker/dotfiles
+startuppopupversion: 5
+customcommandshistory:
+- qa!
+- git checkout release/2.16.1
+hidecommandlog: false
+ignorewhitespaceindiffview: true

@@ -15,7 +15,7 @@ return {
       -- Automatically install LSPs to stdpath for neovim
       { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
       'folke/neodev.nvim',
     },
     config = function()
@@ -78,42 +78,47 @@ return {
       end
 
       local servers = {
-          --
-          -- Web Development
-          --
-          -- typescript/javascript lsp is configured using the typescript-tools
-          -- plugin as it's much better than tsserver.
-          phpactor = with_defaults {},
-          cssls = with_defaults {},
-          html = with_defaults {
-            filetypes = { 'html', 'twig', 'hbs' },
-          },
+        --
+        -- Web Development
+        --
+        -- typescript/javascript lsp is configured using the typescript-tools
+        -- plugin as it's much better than tsserver.
+        --
+        intelephense = with_defaults {},
+        cssls = with_defaults {},
+        html = with_defaults {
+          filetypes = { 'html', 'twig', 'hbs' },
+        },
 
-          eslint = with_defaults {
-            settings = {
-              workingDirectory = { mode = 'auto' },
+        gopls = with_defaults {},
+
+        tailwindcss = with_defaults {
+          filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'json' },
+        },
+        eslint = with_defaults {
+          settings = {
+            workingDirectory = { mode = 'auto' },
+          },
+        },
+        volar = with_defaults {
+          filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'json' },
+          settings = {
+            workingDirectory = { mode = 'auto' },
+          },
+        },
+
+        --
+        -- Other languages
+        --
+        lua_ls = with_defaults {
+          settings = {
+            Lua = {
+              workspace = { checkThirdParty = false },
+              telemetry = { enable = false },
             },
           },
-          volar = with_defaults {
-            filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'json' },
-            settings = {
-              workingDirectory = { mode = 'auto' },
-            },
-          },
-
-
-          --
-          -- Other languages
-          --
-          lua_ls = with_defaults {
-            settings = {
-              Lua = {
-                workspace = { checkThirdParty = false },
-                telemetry = { enable = false },
-              },
-            },
-          },
-          bashls = with_defaults {},
+        },
+        bashls = with_defaults {},
       }
 
       mason_lspconfig.setup {

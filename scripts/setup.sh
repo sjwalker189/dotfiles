@@ -2,7 +2,7 @@
 
 sudo apt update
 sudo apt upgrade
-sudo apt install build-essential git file wget curl gcc openssl
+sudo apt install build-essential git file wget curl gcc openssl htop playerctl
 sudo apt install zsh
 sudo apt autoremove
 
