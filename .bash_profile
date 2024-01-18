@@ -5,6 +5,9 @@ PATH="$HOME/.cargo/bin:$PATH"
 PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 PATH="$HOME/.local/bin:$PATH"
 
+export FLYCTL_INSTALL="/home/swalker/.fly"
+PATH="$FLYCTL_INSTALL/bin:$PATH"
+
 eval "$(fnm env --use-on-cd)"
 eval "$(starship init bash)"
 

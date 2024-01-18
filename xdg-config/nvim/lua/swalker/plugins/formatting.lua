@@ -21,9 +21,9 @@ return {
           sh = { 'shfmt' },
           php = { 'pint' },
           blade = { 'blade-formatter', 'rustywind' },
-          javascript = { 'prettierd' },
-          typescript = { 'prettierd' },
-          vue = { 'prettierd' },
+          javascript = { 'prettierd', 'prettier' },
+          typescript = { 'prettierd', 'prettier' },
+          vue = { 'prettierd', 'prettier' },
         },
         formatters = {
           injected = { options = { ignore_errors = true } },

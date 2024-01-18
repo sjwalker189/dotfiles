@@ -13,7 +13,7 @@ return {
       vim.defer_fn(function()
         require('nvim-treesitter.configs').setup {
           -- Add languages to be installed here that you want installed for treesitter
-          ensure_installed = { 'php', 'go', 'lua', 'tsx', 'typescript', 'vimdoc', 'vim', 'blade', },
+          ensure_installed = { 'php', 'go', 'lua', 'tsx', 'typescript', 'vimdoc', 'vim' },
           sync_install = false,
           auto_install = true,
           ignore_install = {},
@@ -28,8 +28,8 @@ return {
             keymaps = {
               init_selection = '<c-space>',
               node_incremental = '<c-space>',
-              scope_incremental = '<c-s>',
               node_decremental = '<M-space>',
+              scope_incremental = '<M-s>',
             },
           },
           textobjects = {

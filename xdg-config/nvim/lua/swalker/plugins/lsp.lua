@@ -1,9 +1,22 @@
 return {
 
+  -- TypeScript
   {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
+    opts = {
+      settings = {
+        jsx_close_tag = {
+          enable = true,
+        },
+      },
+    },
+  },
+
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^3', -- Recommended
+    ft = { 'rust' },
   },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
@@ -46,13 +59,13 @@ return {
         nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
         nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
 
-        -- Create a command `:Format` local to the LSP buffer
-        vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-          vim.lsp.buf.format()
-        end, { desc = 'Format current buffer with LSP' })
-
-        -- Keymaps
-        vim.keymap.set('n', '<S-C-i>', '<CMD>Format<CR>', { desc = 'Format buffer', silent = true })
+        -- -- Create a command `:Format` local to the LSP buffer
+        -- vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+        --   vim.lsp.buf.format()
+        -- end, { desc = 'Format current buffer with LSP' })
+        --
+        -- -- Keymaps
+        -- vim.keymap.set('n', '<S-C-i>', '<CMD>Format<CR>', { desc = 'Format buffer', silent = true })
       end
 
       -- Setup neovim lua configuration
@@ -84,22 +97,36 @@ return {
         -- typescript/javascript lsp is configured using the typescript-tools
         -- plugin as it's much better than tsserver.
         --
-        intelephense = with_defaults {},
         cssls = with_defaults {},
+
+        phpactor = with_defaults {
+          filetypes = { 'php' },
+        },
+
         html = with_defaults {
           filetypes = { 'html', 'twig', 'hbs' },
         },
 
-        gopls = with_defaults {},
-
         tailwindcss = with_defaults {
           filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'json' },
+          settings = {
+            tailwindCSS = {
+              experimental = {
+                classRegex = {
+                  { 'cva\\(([^)]*)\\)', '["\'`]([^"\'`]*).*?["\'`]' },
+                  { 'cx\\(([^)]*)\\)', "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+                },
+              },
+            },
+          },
         },
+
         eslint = with_defaults {
           settings = {
             workingDirectory = { mode = 'auto' },
           },
         },
+
         volar = with_defaults {
           filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'vue', 'json' },
           settings = {
@@ -118,7 +145,10 @@ return {
             },
           },
         },
+
         bashls = with_defaults {},
+
+        gopls = with_defaults {},
       }
 
       mason_lspconfig.setup {
