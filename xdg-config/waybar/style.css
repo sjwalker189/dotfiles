@@ -45,18 +45,15 @@
 }
 
 window#waybar {
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    /* background-color: @crust; */
-    /* color: @text; */
+    background: rgba(30, 30, 46, .65);
+    color: @subtext1;
 }
 
-#window {
-    color: rgba(255, 255, 255, 0.75);
-}
+#window {}
 
 #workspaces {
-    padding: 0 10px;
+    padding: 0 0;
+    margin: 0 0;
 }
 
 #workspaces button {
@@ -100,7 +97,8 @@ window#waybar {
 #mode {
     color: @crust;
     background: @mauve;
-    padding: 0 10px;
+    padding: 0 15px;
+    font-weight: bold;
 }
 
 #custom-power {
@@ -130,7 +128,7 @@ window#waybar {
 
 #custom-power {
     margin: 0 0;
-    padding-left: 15px;
+    padding-right: 15px;
 }
 
 #custom-spotify {

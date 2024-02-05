@@ -4,9 +4,9 @@
     "height": 42,
 
     // Choose the order of the modules
-    "modules-left": ["custom/power", "sway/workspaces",  "sway/mode", "custom/spotify"],
+    "modules-left": [ "sway/workspaces",  "sway/mode", "custom/spotify"],
     "modules-center": [ "sway/window" ],
-    "modules-right": [ "pulseaudio", "bluetooth", "network", "clock"],
+    "modules-right": [ "pulseaudio", "bluetooth", "network", "clock","custom/power" ],
     
     "sway/workspaces": {
         "disable-scroll": true,

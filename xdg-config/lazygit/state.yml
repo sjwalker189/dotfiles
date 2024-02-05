@@ -1,8 +1,10 @@
 lastupdatecheck: 0
 recentrepos:
+- /home/swalker/scratch/mellow.nvim
 - /home/swalker/aviat/provision-plus
-- /home/swalker/dev/saga
 - /home/swalker/dotfiles
+- /home/swalker/laravel/rodneyjoineryservices.co.nz
+- /home/swalker/dev/saga
 startuppopupversion: 5
 customcommandshistory:
 - qa!

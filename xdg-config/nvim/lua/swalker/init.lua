@@ -1,5 +1,0 @@
-require "swalker.preflight"
-require "swalker.config.settings"
-require "swalker.config.remaps"
-require "swalker.config.autocmds"
-require "swalker.lazy"
