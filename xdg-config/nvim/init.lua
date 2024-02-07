@@ -15,28 +15,15 @@ vim.g.mapleader = ' '
 
 require('lazy').setup {
   -- Base
-  { 'folke/neodev.nvim' },
+  { 'folke/neodev.nvim', opts = {} },
   { 'editorconfig/editorconfig-vim' },
   { 'nvim-tree/nvim-web-devicons', lazy = true },
 
+  -- Code comments
   {
-    -- Automatically add closing tags
-    'echasnovski/mini.pairs',
-    version = '*',
+    'numToStr/Comment.nvim',
+    opts = {},
     event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      require('mini.pairs').setup()
-    end,
-  },
-
-  {
-    -- Code comments shortcut
-    'echasnovski/mini.comment',
-    version = '*',
-    event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      require('mini.comment').setup()
-    end,
   },
 
   -- Colorscheme
@@ -105,6 +92,7 @@ require('lazy').setup {
             require('luasnip').lsp_expand(args.body)
           end,
         },
+
         formatting = {
           format = function(entry, vim_item)
             if vim.tbl_contains({ 'path' }, entry.source.name) then
@@ -171,7 +159,8 @@ require('lazy').setup {
     end,
   },
 
-  -- Diagnostics
+  -- Diagnostic
+  { 'mfussenegger/nvim-dap' },
   {
     'folke/trouble.nvim',
     config = function()
@@ -335,12 +324,14 @@ require('lazy').setup {
       require('neodev').setup {}
       require('mason-lspconfig').setup {
         ensure_installed = {
+          -- Language servers
           'lua_ls',
           'html',
           'cssls',
           'tailwindcss',
           'tsserver',
           'volar',
+          'eslint',
         },
         diagnostics = {
           underline = true,
@@ -385,6 +376,9 @@ require('lazy').setup {
       require('lspconfig').volar.setup {
         capabilities = capabilities,
       }
+      require('lspconfig').eslint.setup {
+        capabilities = capabilities,
+      }
 
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -400,14 +394,9 @@ require('lazy').setup {
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
           vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
           vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-          vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-          vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-          vim.keymap.set('n', '<space>wl', function()
-            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-          end, opts)
           vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
           vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-          vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+          vim.keymap.set({ 'n', 'v', 'i' }, '<C-.>', vim.lsp.buf.code_action, opts)
           vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         end,
       })
@@ -431,7 +420,7 @@ require('lazy').setup {
       },
     },
     opts = {
-      format_on_save = { timeout_ms = 500, lsp_fallback = true },
+      format_on_save = { timeout_ms = 200, lsp_fallback = true },
       formatters_by_ft = {
         lua = { 'stylua' },
         javascript = { { 'prettierd', 'prettier' } },
@@ -448,230 +437,128 @@ require('lazy').setup {
 
   -- Fuzzy finding
   {
-    'nvim-telescope/telescope.nvim',
-    priority = 100,
-    branch = '0.1.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope-file-browser.nvim',
-      'nvim-telescope/telescope-hop.nvim',
-      'nvim-telescope/telescope-ui-select.nvim',
-      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    'camspiers/luarocks',
+    lazy = true,
+    dependencies = { 'rcarriga/nvim-notify' },
+    opts = {
+      rocks = { 'fzy' },
     },
+  },
+  {
+    'camspiers/snap',
+    dependencies = 'camspiers/luarocks',
     config = function()
-      local actions = require 'telescope.actions'
-      local action_state = require 'telescope.actions.state'
-      local action_layout = require 'telescope.actions.layout'
-      local putils = require 'telescope.previewers.utils'
+      local snap = require 'snap'
+      -- local filter = pcall(require, "fzy") and snap.get("consumer.fzy") or snap.get("consumer.fzf")
 
-      local set_prompt_to_entry_value = function(prompt_bufnr)
-        local entry = action_state.get_selected_entry()
-        if not entry or not type(entry) == 'table' then
-          return
-        end
+      local defaults = { prompt = '', suffix = '»' }
+      local file = snap.config.file:with(defaults)
+      local vimgrep = snap.config.vimgrep:with(vim.tbl_extend('force', defaults, {
+        limit = 20000,
+      }))
+      -- local lsp = {
+      -- 	producers = require("snap.producer.lsp"),
+      -- 	select = require("snap.select.lsp"),
+      -- 	preview = require("snap.preview.lsp"),
+      -- }
 
-        action_state.get_current_picker(prompt_bufnr):reset_prompt(entry.ordinal)
-      end
+      -- local function create_snap_lsp_location_handler(producer)
+      -- 	return function()
+      -- 		snap.run({
+      -- 			producer = filter(producer),
+      -- 			select = lsp.select.select,
+      -- 			autoselect = lsp.select.autoselect,
+      -- 			views = { lsp.preview },
+      -- 		})
+      -- 	end
+      -- end
 
-      require('telescope').setup {
-        defaults = {
-          prompt_prefix = '> ',
-          selection_caret = '> ',
-          entry_prefix = '  ',
-          multi_icon = '<>',
-
-          --path_display = 'truncate',
-
-          winblend = 0,
-
-          layout_strategy = 'horizontal',
-          layout_config = {
-            width = 0.95,
-            height = 0.85,
-            -- preview_cutoff = 120,
-            prompt_position = 'top',
-
-            horizontal = {
-              preview_width = function(_, cols, _)
-                if cols > 200 then
-                  return math.floor(cols * 0.4)
-                else
-                  return math.floor(cols * 0.6)
-                end
-              end,
-            },
-
-            vertical = {
-              width = 0.9,
-              height = 0.95,
-              preview_height = 0.5,
-            },
-
-            flex = {
-              horizontal = {
-                preview_width = 0.9,
-              },
-            },
-          },
-
-          selection_strategy = 'reset',
-          sorting_strategy = 'descending',
-          scroll_strategy = 'cycle',
-          color_devicons = true,
-
-          mappings = {
-            i = {
-              ['<RightMouse>'] = actions.close,
-              ['<LeftMouse>'] = actions.select_default,
-              ['<ScrollWheelDown>'] = actions.move_selection_next,
-              ['<ScrollWheelUp>'] = actions.move_selection_previous,
-
-              ['<C-x>'] = false,
-              ['<C-s>'] = actions.select_horizontal,
-              ['<C-n>'] = 'move_selection_next',
-
-              ['<C-e>'] = actions.results_scrolling_down,
-              ['<C-y>'] = actions.results_scrolling_up,
-              -- ["<C-y>"] = set_prompt_to_entry_value,
-              -- These are new :)
-              ['<M-p>'] = action_layout.toggle_preview,
-              ['<M-m>'] = action_layout.toggle_mirror,
-              -- ["<M-p>"] = action_layout.toggle_prompt_position,
-
-              -- ["<M-m>"] = actions.master_stack,
-
-              -- ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-              -- ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-
-              -- This is nicer when used with smart-history plugin.
-              ['<C-k>'] = actions.cycle_history_next,
-              ['<C-j>'] = actions.cycle_history_prev,
-              ['<c-g>s'] = actions.select_all,
-              ['<c-g>a'] = actions.add_selection,
-
-              -- ["<c-space>"] = function(prompt_bufnr)
-              --   local opts = {
-              --     callback = actions.toggle_selection,
-              --     loop_callback = actions.send_selected_to_qflist,
-              --   }
-              --   require("telescope").extensions.hop._hop_loop(prompt_bufnr, opts)
-              -- end,
-
-              ['<C-w>'] = function()
-                vim.api.nvim_input '<c-s-w>'
-              end,
-            },
-
-            n = {
-              ['<C-e>'] = actions.results_scrolling_down,
-              ['<C-y>'] = actions.results_scrolling_up,
-            },
-          },
-
-          borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
-          -- file_ignore_patterns = nil,
-
-          file_previewer = require('telescope.previewers').vim_buffer_cat.new,
-          grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
-          qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
-
-          history = {
-            path = '~/.local/share/nvim/databases/telescope_history.sqlite3',
-            limit = 100,
-          },
-
-          preview = {
-            -- Truncate lines to preview window for too large files
-            filesize_hook = function(filepath, bufnr, opts)
-              local path = require('plenary.path'):new(filepath)
-              -- opts exposes winid
-              local height = vim.api.nvim_win_get_height(opts.winid)
-              local lines = vim.split(path:head(height), '[\r]?\n')
-              vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-            end,
-          },
+      snap.maps {
+        {
+          '<leader>ff',
+          file { producer = 'ripgrep.file', args = { '--hidden', '--iglob', '!.git/*' } },
+          command = 'files',
         },
-
-        pickers = {
-          find_files = {
-            -- I don't like having the cwd prefix in my files
-            find_command = vim.fn.executable 'fdfind' == 1 and { 'fdfind', '--strip-cwd-prefix', '--type', 'f' } or nil,
-
-            mappings = {
-              n = {
-                ['kj'] = 'close',
-              },
-            },
-          },
-
-          git_branches = {
-            mappings = {
-              i = {
-                ['<C-a>'] = false,
-              },
-            },
-          },
-
-          buffers = {
-            sort_lastused = true,
-            sort_mru = true,
-          },
-        },
-
-        extensions = {
-          fzy_native = {
-            override_generic_sorter = true,
-            override_file_sorter = true,
-          },
-
-          fzf_writer = {
-            use_highlighter = false,
-            minimum_grep_characters = 6,
-          },
-
-          hop = {
-            -- keys define your hop keys in order; defaults to roughly lower- and uppercased home row
-            keys = { 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';' }, -- ... and more
-
-            -- Highlight groups to link to signs and lines; the below configuration refers to demo
-            -- sign_hl typically only defines foreground to possibly be combined with line_hl
-            sign_hl = { 'WarningMsg', 'Title' },
-
-            -- optional, typically a table of two highlight groups that are alternated between
-            line_hl = { 'CursorLine', 'Normal' },
-
-            -- options specific to `hop_loop`
-            -- true temporarily disables Telescope selection highlighting
-            clear_selection_hl = false,
-            -- highlight hopped to entry with telescope selection highlight
-            -- note: mutually exclusive with `clear_selection_hl`
-            trace_entry = true,
-            -- jump to entry where hoop loop was started from
-            reset_selection = true,
-          },
-
-          ['ui-select'] = {
-            require('telescope.themes').get_dropdown {
-              -- even more opts
-            },
-          },
-        },
+        { '<leader>fb', file { producer = 'vim.buffer' }, { command = 'buffers' } },
+        { '<leader>fo', file { producer = 'vim.oldfile' }, { command = 'oldfiles' } },
+        { '<leader>fg', vimgrep {}, { command = 'grep' } },
+        { '<leader>fw', vimgrep { filter_with = 'cword' }, { command = 'currentwordgrep' } },
+        -- {
+        -- 	"gd",
+        -- 	create_snap_lsp_location_handler(lsp.producers.definitions),
+        -- 	{ desc = "Go to definition" },
+        -- },
+        -- {
+        -- 	"gi",
+        -- 	create_snap_lsp_location_handler(lsp.producers.implementations),
+        -- 	{ desc = "Go to implementation" },
+        -- },
+        -- {
+        -- 	"gt",
+        -- 	create_snap_lsp_location_handler(lsp.producers.type_definitions),
+        -- 	{ desc = "Go to type definition" },
+        -- },
+        -- {
+        -- 	"gr",
+        -- 	create_snap_lsp_location_handler(lsp.producers.references),
+        -- 	{ desc = "Go to references" },
+        -- },
+        -- {
+        -- 	"gs",
+        -- 	function()
+        -- 		snap.run({
+        -- 			producer = filter(lsp.producers.symbols),
+        -- 			select = lsp.select.select,
+        -- 			views = { lsp.preview },
+        -- 		})
+        -- 	end,
+        -- 	{ desc = "Show symbols" },
+        -- },
       }
-      -- _ = require('telescope').load_extension 'dap'
-      -- _ = require('telescope').load_extension 'notify'
-      _ = require('telescope').load_extension 'file_browser'
-      _ = require('telescope').load_extension 'ui-select'
-      _ = require('telescope').load_extension 'fzf'
-      _ = require('telescope').load_extension 'git_worktree'
-      _ = require('telescope').load_extension 'neoclip'
-      pcall(require('telescope').load_extension, 'smart_history')
-      pcall(require('telescope').load_extension, 'frecency')
     end,
   },
   {
     'ThePrimeagen/git-worktree.nvim',
     config = function()
       require('git-worktree').setup {}
+    end,
+  },
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require 'harpoon'
+
+      harpoon:setup {}
+
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon:list():append()
+      end)
+      vim.keymap.set('n', '<C-e>', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end)
+
+      vim.keymap.set('n', '<leader>1', function()
+        harpoon:list():select(1)
+      end)
+      vim.keymap.set('n', '<leader>2', function()
+        harpoon:list():select(2)
+      end)
+      vim.keymap.set('n', '<leader>3', function()
+        harpoon:list():select(3)
+      end)
+      vim.keymap.set('n', '<leader>4', function()
+        harpoon:list():select(4)
+      end)
+
+      -- Toggle previous & next buffers stored within Harpoon list
+      vim.keymap.set('n', '<Tab>', function()
+        harpoon:list():prev()
+      end)
+      vim.keymap.set('n', '<S-Tab>', function()
+        harpoon:list():next()
+      end)
     end,
   },
   {
@@ -755,6 +642,8 @@ vim.keymap.set('n', '<C-Left>', '<C-w>h', { silent = true })
 vim.keymap.set('n', '<C-Right>', '<C-w>l', { silent = true })
 vim.keymap.set('n', '<C-Up>', '<C-w>k', { silent = true })
 vim.keymap.set('n', '<C-Down>', '<C-w>j', { silent = true })
+
+vim.keymap.set('n', '-', '<CMD>Ex<CR>', {})
 
 -- [[ AutoCommands ]]
 --
