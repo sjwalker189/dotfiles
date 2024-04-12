@@ -19,7 +19,7 @@ set $mod Mod1
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 17
+font pango:DejaVu Sans Mono 10
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
@@ -47,7 +47,6 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -140,8 +139,10 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# exit i3 (logs you out of your X session
+# disabled because we're using rofi-power-menu
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -170,35 +171,49 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-#bar {
-#        position top
-#        status_command i3bar
-#}
 
 set $color_scheme prefer-dark
-set $ui_scale 1.25
 set $wallpaper $HOME/Pictures/bg.jpg
-set $browser google-chrome --force-device-scale-factor=$ui_scale
+set $browser brave-browser
 
-exec --no-startup-id polybar --config=$HOME/.config/polybar/config.ini main
+bar {
+	mode dock
+	hidden_state show
+        status_command i3status
+	separator_symbol " | "
+	wheel_up_cmd nop
+	wheel_down_cmd nop
+	font pango:DejaVu Sans Mono 10
+}
+
+
+
+# exec --no-startup-id polybar --config=$HOME/.config/polybar/config.ini main
 exec_always --no-startup-id feh --bg-scale $wallpaper
 
 # Custom 
-
-for_window [class="^.*"] border pixel 2
-                          # class                 border  backgr. text    indicator child_border
+                         # class                 border  bg 	 text    indicator child_border
 for_window [class="^.*"] client.focused          #77dd77 #285577 #ffffff #2e9ef4   #285577
+for_window [class="^.*"] border pixel 1
 
 
+# Clamshell mode
+bindsym $mod+Shift+i exec xrandr --output DP-4 --off --output DP-1.3 --auto
+
+# Multi-monitor mode (todo fix res on DP-1.3)
+bindsym $mod+Shift+Ctrl+i exec xrandr --output DP-4 --auto --output DP-1.3 --auto
+
+
+bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+period exec systemctl suspend
-bindsym $mod+Shift+Return exec google-chrome --force-device-scale-factor=$ui_scale
+bindsym $mod+Shift+Return exec $browser
 bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+g exec --no-startup-id rofi -show filebrowser
-bindsym $mod+l exec rofi -show power-menu -modi power-menu:~/.local/bin/rofi-power-menu
 
-exec_always gsettings set org.gnome.desktop.interface scaling-factor $ui_scale
+bindsym $mod+l exec rofi -show power-menu -modi power-menu:~/dotfiles/bin/rofi-power-menu
+bindsym Mod4+l exec rofi -show power-menu -modi power-menu:~/dotfiles/bin/rofi-power-menu # lock key
+
+# exec_always gsettings set org.gnome.desktop.interface scaling-factor $ui_scale
 exec_always gsettings set org.gnome.desktop.interface color-scheme $color_scheme
 
 # Disable caps lock
@@ -224,18 +239,19 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 bindsym XF86LaunchA exec --no-startup-id rofi -show window
 bindsym XF86LaunchB exec --no-startup-id rofi -show drun
 
-# TODO
 # Tools
-bindsym Print exec --no-startup-id rofi -show drun # screen
 bindsym Mod4+c exec --no-startup-id rofi -show drun # mic
-bindsym Mod4+l exec --no-startup-id rofi -show drun # lock
+
+## Screenshots
+bindsym Print exec --no-startup-id maim "/home/$USER/Pictures/Screenshots/$(date).png"
+# bindsym $mod+Print exec --no-startup-id maim --window $(xdotool getactivewindow) "/home/$USER/Pictures/$(date)"
+# bindsym Shift+Print exec --no-startup-id maim --select "/home/$USER/Pictures/$(date)"
 
 # TODO: Create a script, keybind, and waybar item  
 # Fn Lock
 set $fn_lock_on 2
 set $fn_lock_off 1
 # echo {mode} | sudo tee /sys/module/hid_apple/parameters/fnmode 
-
 
 # lock key = Super_L+l
 # mic key Super_L+c
