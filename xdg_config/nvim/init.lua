@@ -27,15 +27,40 @@ require('lazy').setup {
   },
 
   -- Colorscheme
+  -- {
+  --   'catppuccin/nvim',
+  --   name = 'catppuccin',
+  --   priority = 1000,
+  --   opts = {
+  --     compile_path = vim.fn.stdpath 'cache' .. '/catppuccin',
+  --   },
+  --   init = function()
+  --     vim.cmd 'colorscheme catppuccin-mocha'
+  --   end,
+  -- },
+
   {
-    'catppuccin/nvim',
-    name = 'catppuccin',
+    'tjdevries/colorbuddy.nvim',
     priority = 1000,
-    opts = {
-      compile_path = vim.fn.stdpath 'cache' .. '/catppuccin',
-    },
-    init = function()
-      vim.cmd 'colorscheme catppuccin-mocha'
+    config = function()
+      local colorbuddy = require 'colorbuddy'
+      local Color = colorbuddy.Color
+      local Group = colorbuddy.Group
+      local c = colorbuddy.colors
+      local g = colorbuddy.groups
+      local s = colorbuddy.styles
+
+      -- Set base color scheme
+      vim.cmd.colorscheme 'gruvbuddy'
+
+      -- Customise color scheme by re-defining colors and groups
+      local background_string = '#121317'
+      Color.new('background', background_string)
+      Color.new('gray0', background_string)
+
+      Group.new('LineNr', c.gray1:light(), c.gray0)
+      Group.new('CursorLine', nil, g.normal.bg:light(0.025))
+      Group.new('StatusLine', c.gray2, c.background, nil)
     end,
   },
 
@@ -48,6 +73,14 @@ require('lazy').setup {
         component_separators = '|',
         section_separators = '',
         globalstatus = true,
+      },
+      sections = {
+        lualine_a = {},
+        lualine_b = { 'branch', 'diagnostics', 'diff' },
+        lualine_c = { 'filename' },
+        lualine_x = { 'filetype' },
+        lualine_y = { 'location' },
+        lualine_z = {},
       },
     },
   },
@@ -86,7 +119,11 @@ require('lazy').setup {
       local cmp = require 'cmp'
 
       cmp.setup {
-        enabled = true,
+        -- Enabled except when in comments
+        enabled = function()
+          local context = require 'cmp.config.context'
+          return not (context.in_treesitter_capture 'comment' == true or context.in_syntax_group 'Comment')
+        end,
         snippet = {
           expand = function(args)
             require('luasnip').lsp_expand(args.body)
@@ -156,43 +193,6 @@ require('lazy').setup {
           { name = 'cmdline' },
         }),
       })
-    end,
-  },
-
-  -- Diagnostic
-  { 'mfussenegger/nvim-dap' },
-  {
-    'folke/trouble.nvim',
-    config = function()
-      require('trouble').setup {
-        icons = true,
-        multiline = true,
-        use_diagnostic_signs = true,
-      }
-
-      vim.keymap.set('n', '<leader>xx', function()
-        require('trouble').toggle()
-      end)
-      vim.keymap.set('n', '<leader>xw', function()
-        require('trouble').toggle 'workspace_diagnostics'
-      end)
-      vim.keymap.set('n', '<leader>xd', function()
-        require('trouble').toggle 'document_diagnostics'
-      end)
-      vim.keymap.set('n', '<leader>xq', function()
-        require('trouble').toggle 'quickfix'
-      end)
-      vim.keymap.set('n', '<leader>xl', function()
-        require('trouble').toggle 'loclist'
-      end)
-      vim.keymap.set('n', 'gR', function()
-        require('trouble').toggle 'lsp_references'
-      end)
-
-      vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-      vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-      vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-      vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
     end,
   },
 
@@ -273,6 +273,8 @@ require('lazy').setup {
         'vim',
         'vimdoc',
         'yaml',
+        'go',
+        'gomod',
       },
       incremental_selection = {
         enable = true,
@@ -322,17 +324,49 @@ require('lazy').setup {
     },
     config = function()
       require('neodev').setup {}
-      require('mason-lspconfig').setup {
-        ensure_installed = {
-          -- Language servers
-          'lua_ls',
-          'html',
-          'cssls',
-          'tailwindcss',
-          'tsserver',
-          'volar',
-          'eslint',
+
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      local util = require 'lspconfig/util'
+
+      local servers = {
+        lua_ls = {
+          capabilities = capabilities,
         },
+        gopls = {
+          capabilities = capabilities,
+          filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+          root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
+        },
+        html = {
+          capabilities = capabilities,
+          filetypes = { 'html', 'vue' },
+        },
+        cssls = {
+          capabilities = capabilities,
+          settings = {
+            validate = true,
+            lint = {
+              -- For tailwindcss
+              unknownAtRules = 'ignore',
+            },
+          },
+        },
+        tailwindcss = {
+          capabilities = capabilities,
+        },
+        tsserver = {
+          capabilities = capabilities,
+        },
+        volar = {
+          capabilities = capabilities,
+        },
+        eslint = {
+          capabilities = capabilities,
+        },
+      }
+
+      require('mason-lspconfig').setup {
+        ensure_installed = vim.tbl_keys(servers),
         diagnostics = {
           underline = true,
           update_in_insert = false,
@@ -348,38 +382,12 @@ require('lazy').setup {
         },
       }
 
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      -- Register the LSP servers
+      for server, config in pairs(servers) do
+        require('lspconfig')[server].setup(config)
+      end
 
-      require('lspconfig').lua_ls.setup {
-        capabilities = capabilities,
-      }
-      require('lspconfig').html.setup {
-        capabilities = capabilities,
-        filetypes = { 'html', 'vue' },
-      }
-      require('lspconfig').cssls.setup {
-        capabilities = capabilities,
-        settings = {
-          validate = true,
-          lint = {
-            -- For tailwindcss
-            unknownAtRules = 'ignore',
-          },
-        },
-      }
-      require('lspconfig').tailwindcss.setup {
-        capabilities = capabilities,
-      }
-      require('lspconfig').tsserver.setup {
-        capabilities = capabilities,
-      }
-      require('lspconfig').volar.setup {
-        capabilities = capabilities,
-      }
-      require('lspconfig').eslint.setup {
-        capabilities = capabilities,
-      }
-
+      -- Connect keymaps when LSP servers attach to buffers
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('UserLspConfig', {}),
         callback = function(ev)
@@ -449,29 +457,12 @@ require('lazy').setup {
     dependencies = 'camspiers/luarocks',
     config = function()
       local snap = require 'snap'
-      -- local filter = pcall(require, "fzy") and snap.get("consumer.fzy") or snap.get("consumer.fzf")
 
       local defaults = { prompt = '', suffix = '»' }
       local file = snap.config.file:with(defaults)
       local vimgrep = snap.config.vimgrep:with(vim.tbl_extend('force', defaults, {
         limit = 20000,
       }))
-      -- local lsp = {
-      -- 	producers = require("snap.producer.lsp"),
-      -- 	select = require("snap.select.lsp"),
-      -- 	preview = require("snap.preview.lsp"),
-      -- }
-
-      -- local function create_snap_lsp_location_handler(producer)
-      -- 	return function()
-      -- 		snap.run({
-      -- 			producer = filter(producer),
-      -- 			select = lsp.select.select,
-      -- 			autoselect = lsp.select.autoselect,
-      -- 			views = { lsp.preview },
-      -- 		})
-      -- 	end
-      -- end
 
       snap.maps {
         {
@@ -483,89 +474,69 @@ require('lazy').setup {
         { '<leader>fo', file { producer = 'vim.oldfile' }, { command = 'oldfiles' } },
         { '<leader>fg', vimgrep {}, { command = 'grep' } },
         { '<leader>fw', vimgrep { filter_with = 'cword' }, { command = 'currentwordgrep' } },
-        -- {
-        -- 	"gd",
-        -- 	create_snap_lsp_location_handler(lsp.producers.definitions),
-        -- 	{ desc = "Go to definition" },
-        -- },
-        -- {
-        -- 	"gi",
-        -- 	create_snap_lsp_location_handler(lsp.producers.implementations),
-        -- 	{ desc = "Go to implementation" },
-        -- },
-        -- {
-        -- 	"gt",
-        -- 	create_snap_lsp_location_handler(lsp.producers.type_definitions),
-        -- 	{ desc = "Go to type definition" },
-        -- },
-        -- {
-        -- 	"gr",
-        -- 	create_snap_lsp_location_handler(lsp.producers.references),
-        -- 	{ desc = "Go to references" },
-        -- },
-        -- {
-        -- 	"gs",
-        -- 	function()
-        -- 		snap.run({
-        -- 			producer = filter(lsp.producers.symbols),
-        -- 			select = lsp.select.select,
-        -- 			views = { lsp.preview },
-        -- 		})
-        -- 	end,
-        -- 	{ desc = "Show symbols" },
-        -- },
       }
+
+      -- Theme
+      vim.api.nvim_set_hl(0, 'SnapBorder', { fg = '#5B6078' })
     end,
   },
-  {
-    'ThePrimeagen/git-worktree.nvim',
-    config = function()
-      require('git-worktree').setup {}
-    end,
-  },
-  {
-    'ThePrimeagen/harpoon',
-    branch = 'harpoon2',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      local harpoon = require 'harpoon'
-
-      harpoon:setup {}
-
-      vim.keymap.set('n', '<leader>a', function()
-        harpoon:list():append()
-      end)
-      vim.keymap.set('n', '<C-e>', function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-      end)
-
-      vim.keymap.set('n', '<leader>1', function()
-        harpoon:list():select(1)
-      end)
-      vim.keymap.set('n', '<leader>2', function()
-        harpoon:list():select(2)
-      end)
-      vim.keymap.set('n', '<leader>3', function()
-        harpoon:list():select(3)
-      end)
-      vim.keymap.set('n', '<leader>4', function()
-        harpoon:list():select(4)
-      end)
-
-      -- Toggle previous & next buffers stored within Harpoon list
-      vim.keymap.set('n', '<Tab>', function()
-        harpoon:list():prev()
-      end)
-      vim.keymap.set('n', '<S-Tab>', function()
-        harpoon:list():next()
-      end)
-    end,
-  },
+  -- {
+  --   'ThePrimeagen/git-worktree.nvim',
+  --   config = function()
+  --     require('git-worktree').setup {}
+  --   end,
+  -- },
+  -- {
+  --   'ThePrimeagen/harpoon',
+  --   branch = 'harpoon2',
+  --   dependencies = { 'nvim-lua/plenary.nvim' },
+  --   config = function()
+  --     local harpoon = require 'harpoon'
+  --
+  --     harpoon:setup {}
+  --
+  --     vim.keymap.set('n', '<leader>a', function()
+  --       harpoon:list():append()
+  --     end)
+  --     vim.keymap.set('n', '<C-e>', function()
+  --       harpoon.ui:toggle_quick_menu(harpoon:list())
+  --     end)
+  --
+  --     vim.keymap.set('n', '<leader>1', function()
+  --       harpoon:list():select(1)
+  --     end)
+  --     vim.keymap.set('n', '<leader>2', function()
+  --       harpoon:list():select(2)
+  --     end)
+  --     vim.keymap.set('n', '<leader>3', function()
+  --       harpoon:list():select(3)
+  --     end)
+  --     vim.keymap.set('n', '<leader>4', function()
+  --       harpoon:list():select(4)
+  --     end)
+  --
+  --     -- Toggle previous & next buffers stored within Harpoon list
+  --     vim.keymap.set('n', '<Tab>', function()
+  --       harpoon:list():prev()
+  --     end)
+  --     vim.keymap.set('n', '<S-Tab>', function()
+  --       harpoon:list():next()
+  --     end)
+  --   end,
+  -- },
   {
     'AckslD/nvim-neoclip.lua',
     config = function()
       require('neoclip').setup()
     end,
+  },
+  {
+    'folke/zen-mode.nvim',
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
   },
 }
 
@@ -574,48 +545,49 @@ require('lazy').setup {
 -- NOTE: You can change these options as you wish!
 
 -- Block cursor always
-vim.o.guicursor = ''
+vim.opt.guicursor = ''
+vim.opt.cursorline = true
 
 -- Set highlight on search
-vim.o.hlsearch = false
-vim.o.incsearch = true
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
 
 -- Show numbers
 vim.opt.number = true
 vim.opt.relativenumber = true
 -- Enable mouse mode
-vim.o.mouse = 'a'
+vim.opt.mouse = 'a'
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
+vim.opt.clipboard = 'unnamedplus'
 
 -- Enable break indent
-vim.o.breakindent = true
+vim.opt.breakindent = true
 
 -- Save undo history
-vim.o.undofile = true
+vim.opt.undofile = true
 
 -- Case-insensitive searching UNLESS \C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
 vim.wo.signcolumn = 'yes'
 
 -- Decrease update time
-vim.o.updatetime = 250
-vim.o.timeoutlen = 300
+vim.opt.updatetime = 250
+vim.opt.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
+vim.opt.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
-vim.o.termguicolors = true
+vim.opt.termguicolors = true
 
 -- Show at least 20 lines always
-vim.o.scrolloff = 20
+vim.opt.scrolloff = 20
 
 -- Always split down or right
 vim.opt.splitbelow = true
@@ -627,6 +599,12 @@ vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
 -- [[ Keymaps ]]
+
+-- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Make current file executable
 vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true })
@@ -651,10 +629,12 @@ local function augroup(name)
   return vim.api.nvim_create_augroup('lazyvim_' .. name, { clear = true })
 end
 
--- Highlight on yank
+-- Highlight when yanking (copying) text
+--  Try it with `yap` in normal mode
+--  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
-  group = augroup 'YankHighlight',
-  pattern = '*',
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.highlight.on_yank()
   end,

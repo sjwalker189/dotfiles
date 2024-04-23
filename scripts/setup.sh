@@ -8,7 +8,7 @@ sudo apt autoremove
 
 # Configure GIT
 echo 'Configuring Git'
-echo '-------------'
+echo '---------------'
 git config --global user.name "Sam Walker"
 git config --global --add --bool push.autoSetupRemote true
 
@@ -19,7 +19,8 @@ tar xf lazygit.tar.gz lazygit
 sudo install lazygit /usr/local/bin
 rm lazygit.tar.gz
 
-# Starship (Better Bash Experience)
+echo 'Starship (better shell experience)'
+echo '----------------------------------'
 curl -sS https://starship.rs/install.sh | sh
 
 # Install Rust
@@ -31,12 +32,13 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 # resource bashrc (for cargo to be available)
 # create and source .bash_profile
 
-# Instal KIITY
-echo 'Installing Kitty'
-echo '----------------'
-sudo apt install kitty -y
-# Choose kitty as the default terminal
-sudo update-alternatives --config x-terminal-emulator
+# Install wezterm terminal emulator
+echo 'Installing Wezterm'
+echo '------------------'
+curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
+sudo apt update
+sudo apt install wezterm
 
 # Install Node
 echo 'Installing Node'
