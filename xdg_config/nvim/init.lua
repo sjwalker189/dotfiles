@@ -26,41 +26,67 @@ require('lazy').setup {
     event = { 'BufReadPre', 'BufNewFile' },
   },
 
-  -- Colorscheme
-  -- {
-  --   'catppuccin/nvim',
-  --   name = 'catppuccin',
-  --   priority = 1000,
-  --   opts = {
-  --     compile_path = vim.fn.stdpath 'cache' .. '/catppuccin',
-  --   },
-  --   init = function()
-  --     vim.cmd 'colorscheme catppuccin-mocha'
-  --   end,
-  -- },
-
   {
     'tjdevries/colorbuddy.nvim',
-    priority = 1000,
     config = function()
+      vim.cmd.colorscheme 'gruvbuddy'
+
       local colorbuddy = require 'colorbuddy'
+
       local Color = colorbuddy.Color
       local Group = colorbuddy.Group
       local c = colorbuddy.colors
       local g = colorbuddy.groups
       local s = colorbuddy.styles
 
-      -- Set base color scheme
-      vim.cmd.colorscheme 'gruvbuddy'
+      Color.new('black', '#000000')
+      Color.new('white', '#f2e5bc')
+      Color.new('red', '#cc6666')
+      Color.new('pink', '#fef601')
+      Color.new('green', '#99cc99')
+      Color.new('yellow', '#fde68a')
+      Color.new('blue', '#81a2be')
+      Color.new('aqua', '#8ec07c')
+      Color.new('cyan', '#8abeb7')
+      Color.new('purple', '#8e6fbd')
+      Color.new('violet', '#b294bb')
+      Color.new('orange', '#de935f')
+      Color.new('brown', '#a3685a')
 
-      -- Customise color scheme by re-defining colors and groups
+      Color.new('seagreen', '#698b69')
+      Color.new('turquoise', '#698b69')
+
       local background_string = '#121317'
+      local comment_string = '#576a6e'
       Color.new('background', background_string)
       Color.new('gray0', background_string)
+      Color.new('comment', comment_string)
 
-      Group.new('LineNr', c.gray1:light(), c.gray0)
+      Group.new('Normal', c.superwhite, c.gray0)
+      Group.new('Comment', c.comment, nil, s.italic)
       Group.new('CursorLine', nil, g.normal.bg:light(0.025))
-      Group.new('StatusLine', c.gray2, c.background, nil)
+      Group.new('StatusLine', c.softwhite, c.background, nil)
+
+      Group.new('@constant', c.orange, nil, s.none)
+
+      Group.new('@function', c.yellow, g.Normal, g.Normal)
+      Group.new('@function.bracket', c.gray3, g.Normal, g.Normal)
+
+      Group.new('@keyword', c.violet, nil, s.none)
+      Group.new('@keyword.faded', g.nontext.fg:light(), nil, s.none)
+
+      Group.new('@property', c.blue)
+
+      Group.new('@variable', c.superwhite, nil)
+      Group.new('@variable.member', c.blue)
+      Group.new('@variable.member.vue', c.violet, g.Normal)
+      Group.new('@variable.builtin', c.purple:light():light(), g.Normal)
+
+      Group.new('@tag.attribute', c.violet, g.Normal)
+      Group.new('@tag.delimiter', c.blue:light())
+
+      Group.new('@punctuation.bracket', c.gray4)
+      Group.new('@punctuation.special.vue', g.variable)
     end,
   },
 
@@ -75,7 +101,7 @@ require('lazy').setup {
         globalstatus = true,
       },
       sections = {
-        lualine_a = {},
+        lualine_a = { 'mode' },
         lualine_b = { 'branch', 'diagnostics', 'diff' },
         lualine_c = { 'filename' },
         lualine_x = { 'filetype' },
@@ -346,16 +372,29 @@ require('lazy').setup {
           settings = {
             validate = true,
             lint = {
-              -- For tailwindcss
+              -- For tailwindcss @apply
               unknownAtRules = 'ignore',
             },
           },
         },
         tailwindcss = {
           capabilities = capabilities,
+          filetypes = { 'templ', 'javascript', 'typescript', 'react', 'vue' },
+          init_options = { userLanguages = { templ = 'html' } },
         },
         tsserver = {
           capabilities = capabilities,
+          filetypes = { 'javascript', 'typescript', 'typescriptreact', 'javascriptreact', 'react', 'vue' },
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                -- Location of @vue/typescript-plugin
+                location = '/home/swalker/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin',
+                languages = { 'javascript', 'typescript', 'vue' },
+              },
+            },
+          },
         },
         volar = {
           capabilities = capabilities,
@@ -552,6 +591,9 @@ vim.opt.cursorline = true
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
+-- Mode displayed in statusbar
+vim.opt.showmode = false
+
 -- Show numbers
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -565,6 +607,9 @@ vim.opt.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.opt.breakindent = true
+
+-- Don't have `o` add a comment
+vim.opt.formatoptions:remove 'o'
 
 -- Save undo history
 vim.opt.undofile = true
