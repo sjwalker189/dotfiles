@@ -1,4 +1,5 @@
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
     'git',
@@ -351,17 +352,13 @@ require('lazy').setup {
     config = function()
       require('neodev').setup {}
 
+      vim.filetype.add { extension = { templ = 'templ' } }
+
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
-      local util = require 'lspconfig/util'
 
       local servers = {
         lua_ls = {
           capabilities = capabilities,
-        },
-        gopls = {
-          capabilities = capabilities,
-          filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
-          root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
         },
         html = {
           capabilities = capabilities,
@@ -390,7 +387,7 @@ require('lazy').setup {
               {
                 name = '@vue/typescript-plugin',
                 -- Location of @vue/typescript-plugin
-                location = '/home/swalker/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin',
+                location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin',
                 languages = { 'javascript', 'typescript', 'vue' },
               },
             },
@@ -439,9 +436,9 @@ require('lazy').setup {
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
           vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-          vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
           vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-          vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+          vim.keymap.set('n', '<C-T>', vim.lsp.buf.type_definition, opts)
+          vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
           vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
           vim.keymap.set({ 'n', 'v', 'i' }, '<C-.>', vim.lsp.buf.code_action, opts)
           vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
@@ -519,63 +516,11 @@ require('lazy').setup {
       vim.api.nvim_set_hl(0, 'SnapBorder', { fg = '#5B6078' })
     end,
   },
-  -- {
-  --   'ThePrimeagen/git-worktree.nvim',
-  --   config = function()
-  --     require('git-worktree').setup {}
-  --   end,
-  -- },
-  -- {
-  --   'ThePrimeagen/harpoon',
-  --   branch = 'harpoon2',
-  --   dependencies = { 'nvim-lua/plenary.nvim' },
-  --   config = function()
-  --     local harpoon = require 'harpoon'
-  --
-  --     harpoon:setup {}
-  --
-  --     vim.keymap.set('n', '<leader>a', function()
-  --       harpoon:list():append()
-  --     end)
-  --     vim.keymap.set('n', '<C-e>', function()
-  --       harpoon.ui:toggle_quick_menu(harpoon:list())
-  --     end)
-  --
-  --     vim.keymap.set('n', '<leader>1', function()
-  --       harpoon:list():select(1)
-  --     end)
-  --     vim.keymap.set('n', '<leader>2', function()
-  --       harpoon:list():select(2)
-  --     end)
-  --     vim.keymap.set('n', '<leader>3', function()
-  --       harpoon:list():select(3)
-  --     end)
-  --     vim.keymap.set('n', '<leader>4', function()
-  --       harpoon:list():select(4)
-  --     end)
-  --
-  --     -- Toggle previous & next buffers stored within Harpoon list
-  --     vim.keymap.set('n', '<Tab>', function()
-  --       harpoon:list():prev()
-  --     end)
-  --     vim.keymap.set('n', '<S-Tab>', function()
-  --       harpoon:list():next()
-  --     end)
-  --   end,
-  -- },
   {
     'AckslD/nvim-neoclip.lua',
     config = function()
       require('neoclip').setup()
     end,
-  },
-  {
-    'folke/zen-mode.nvim',
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    },
   },
 }
 
