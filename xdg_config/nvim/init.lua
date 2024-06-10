@@ -300,8 +300,7 @@ require('lazy').setup {
         'vim',
         'vimdoc',
         'yaml',
-        'go',
-        'gomod',
+        'c_sharp',
       },
       incremental_selection = {
         enable = true,
@@ -399,6 +398,8 @@ require('lazy').setup {
         eslint = {
           capabilities = capabilities,
         },
+        -- dotnet / C#
+        omnisharp = { capabilities = capabilities },
       }
 
       require('mason-lspconfig').setup {
