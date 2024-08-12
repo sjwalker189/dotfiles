@@ -18,17 +18,23 @@ local colors = {
 	fg = "#D6D6D6",
 	bg = "#121317",
 
-	-- TODO: Gray scale from 0 - 9
-	-- TOOD: Brights
+	black = "#121317",
+	red = "#cc6666",
+	green = "#99cc99",
+	yellow = "#f8fe7a",
+	blue = "#81a2be",
+	purple = "#8e6fbd",
+	cyan = "#8abeb7",
+	white = "#D6D6D6",
 
-	black = "#121317", -- black
-	red = "#cc6666", -- red
-	green = "#99cc99", -- green
-	yellow = "#f8fe7a", -- yellow
-	blue = "#81a2be", -- blue
-	purple = "#8e6fbd", -- purple
-	cyan = "#8abeb7", -- cyan
-	white = "#D6D6D6", -- white
+	black_bright = "#71727b",
+	red_bright = "#D17575",
+	green_bright = "#AED6AE",
+	yellow_bright = "#F6FE5D",
+	blue_bright = "#A1B9CE",
+	purple_bright = "#A78FCC",
+	cyan_bright = "#A3CCC7",
+	white_bright = "silver",
 }
 
 -- Set background to same color as neovim
@@ -39,24 +45,24 @@ config.colors = {
 	cursor_fg = "black",
 	selection_bg = "#2A3E50",
 	ansi = {
-		"#121317", -- black
-		"#cc6666", -- red
-		"#99cc99", -- green
-		"#f8fe7a", -- yellow
-		"#81a2be", -- blue
-		"#8e6fbd", -- purple
-		"#8abeb7", -- cyan
-		"#D6D6D6", -- white
+		colors.black,
+		colors.red,
+		colors.green,
+		colors.yellow,
+		colors.blue,
+		colors.purple,
+		colors.cyan,
+		colors.white,
 	},
 	brights = {
-		"#1B1C22", -- black
-		"#D17575", -- red
-		"#AED6AE", -- green
-		"#F6FE5D", -- yellow
-		"#A1B9CE", -- blue
-		"#A78FCC", -- purple
-		"#A3CCC7", -- cyan
-		"#FFFFFF", -- white
+		colors.black_bright,
+		colors.red_bright,
+		colors.green_bright,
+		colors.yellow_bright,
+		colors.blue_bright,
+		colors.purple_bright,
+		colors.cyan_bright,
+		colors.white_bright,
 	},
 	tab_bar = {
 		background = colors.bg,
@@ -87,9 +93,9 @@ config.colors = {
 
 config.font_size = 11
 config.font = wezterm.font_with_fallback({
-	"MonoLisa",
-	-- "Berkeley Mono",
-	-- "nonicons",
+	"Roboto Mono",
+	"Sauce Code Pro Nerd Font",
+	"nonicons",
 })
 
 -- default is true, has more "native" look
@@ -109,6 +115,8 @@ config.tab_bar_at_bottom = false
 config.hide_tab_bar_if_only_one_tab = true
 
 config.freetype_load_target = "HorizontalLcd"
+
+config.term = "wezterm"
 
 -- Neovim zen mode integration
 wezterm.on("user-var-changed", function(window, pane, name, value)
@@ -133,6 +141,10 @@ wezterm.on("user-var-changed", function(window, pane, name, value)
 	end
 	window:set_config_overrides(overrides)
 end)
+config.set_environment_variables = {
+	TERMINFO_DIRS = "/home/swalker/.terminfo",
+}
+config.term = "wezterm"
 
 -- and finally, return the configuration to wezterm
 return config

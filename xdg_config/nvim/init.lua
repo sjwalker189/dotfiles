@@ -59,6 +59,7 @@ require('lazy').setup {
 
       local background_string = '#121317'
       local comment_string = '#576a6e'
+
       Color.new('background', background_string)
       Color.new('gray0', background_string)
       Color.new('comment', comment_string)
@@ -88,6 +89,8 @@ require('lazy').setup {
 
       Group.new('@punctuation.bracket', c.gray4)
       Group.new('@punctuation.special.vue', g.variable)
+
+      Group.new('WinSeparator', c.gray2)
     end,
   },
 
@@ -300,7 +303,8 @@ require('lazy').setup {
         'vim',
         'vimdoc',
         'yaml',
-        'c_sharp',
+        'go',
+        'templ',
       },
       incremental_selection = {
         enable = true,
@@ -398,8 +402,15 @@ require('lazy').setup {
         eslint = {
           capabilities = capabilities,
         },
-        -- dotnet / C#
-        omnisharp = { capabilities = capabilities },
+
+        -- Go
+        gopls = {
+          capabilities = capabilities,
+        },
+        templ = {
+          capabilities = capabilities,
+          filetypes = { 'html', 'templ' },
+        },
       }
 
       require('mason-lspconfig').setup {
@@ -424,6 +435,14 @@ require('lazy').setup {
         require('lspconfig')[server].setup(config)
       end
 
+      local mode = {
+        n = 'n',
+        v = 'v',
+        i = 'i',
+        x = 'x',
+        all = { 'n', 'v', 'i', 'x' },
+      }
+
       -- Connect keymaps when LSP servers attach to buffers
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -434,17 +453,21 @@ require('lazy').setup {
           -- Buffer local mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
           local opts = { buffer = ev.buf }
-          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-          vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-          vim.keymap.set('n', '<C-T>', vim.lsp.buf.type_definition, opts)
-          vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
-          vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-          vim.keymap.set({ 'n', 'v', 'i' }, '<C-.>', vim.lsp.buf.code_action, opts)
-          vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+          vim.keymap.set(mode.n, 'gD', vim.lsp.buf.declaration, opts)
+          vim.keymap.set(mode.n, 'gd', vim.lsp.buf.definition, opts)
+          vim.keymap.set(mode.n, 'K', vim.lsp.buf.hover, opts)
+          vim.keymap.set(mode.n, '<C-k>', vim.lsp.buf.signature_help, opts)
+          vim.keymap.set(mode.n, '<C-T>', vim.lsp.buf.type_definition, opts)
+          vim.keymap.set(mode.n, '<F2>', vim.lsp.buf.rename, opts)
+          vim.keymap.set(mode.n, '<space>rn', vim.lsp.buf.rename, opts)
+          vim.keymap.set(mode.all, '<C-.>', vim.lsp.buf.code_action, opts)
+          vim.keymap.set(mode.all, '<F3>', vim.lsp.buf.code_action, opts)
+          vim.keymap.set(mode.n, 'gr', vim.lsp.buf.references, opts)
         end,
       })
+
+      -- Add templ support
+      vim.filetype.add { extension = { templ = 'templ' } }
     end,
   },
 
@@ -483,15 +506,11 @@ require('lazy').setup {
   -- Fuzzy finding
   {
     'camspiers/luarocks',
-    lazy = true,
-    dependencies = { 'rcarriga/nvim-notify' },
-    opts = {
-      rocks = { 'fzy' },
-    },
+    opts = { rocks = { 'fzy' } },
   },
   {
     'camspiers/snap',
-    dependencies = 'camspiers/luarocks',
+    dependencies = { 'camspiers/luarocks' },
     config = function()
       local snap = require 'snap'
 
@@ -508,7 +527,7 @@ require('lazy').setup {
           command = 'files',
         },
         { '<leader>fb', file { producer = 'vim.buffer' }, { command = 'buffers' } },
-        { '<leader>fo', file { producer = 'vim.oldfile' }, { command = 'oldfiles' } },
+        { '<leader>fr', file { producer = 'vim.oldfile' }, { command = 'oldfiles' } },
         { '<leader>fg', vimgrep {}, { command = 'grep' } },
         { '<leader>fw', vimgrep { filter_with = 'cword' }, { command = 'currentwordgrep' } },
       }
@@ -522,6 +541,35 @@ require('lazy').setup {
     config = function()
       require('neoclip').setup()
     end,
+  },
+
+  -- UI Replacements
+  {
+    'stevearc/dressing.nvim',
+    opts = {},
+    config = function()
+      require('dressing').setup {
+        select = {
+          get_config = function(opts)
+            if opts.kind == 'codeaction' then
+              return {
+                backend = 'nui',
+                nui = {
+                  relative = 'cursor',
+                  max_width = 40,
+                },
+              }
+            end
+          end,
+        },
+      }
+    end,
+  },
+
+  -- Prevent buffers from being opened in quickfix list and other secondary window types
+  {
+    'stevearc/stickybuf.nvim',
+    opts = {},
   },
 }
 
