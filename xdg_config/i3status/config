@@ -1,9 +1,10 @@
 general {
         colors = false
-        interval = 5
+        interval = 1
 }
 
-order += "tztime local"
+order += "tztime date"
+order += "tztime time"
 
 battery 0 {
         format = "%status %percentage %remaining %emptytime"
@@ -16,8 +17,12 @@ battery 0 {
         low_threshold = 10
 }
 
-tztime local {
-        format = "%a %d %b %I:%M %p"
+tztime date {
+        format = "%a %d %b"
+}
+
+tztime time {
+        format = "%I:%M %p"
 }
 
 volume master {

@@ -1,10 +1,7 @@
-export EDITOR="$(which nvim)"
+export EDITOR="nvim"
+export SUDO_EDITOR="$EDITOR"
 
-PATH="$HOME/.local/bin:$PATH"
-PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
-PATH="$HOME/.config/composer/vendor/bin:$PATH"
-PATH="$HOME/.fnm:$PATH"
-
+export GTK_THEME=Adwaita-dark
 # Rust
 . "$HOME/.cargo/env"
 PATH="$HOME/.cargo/bin:$PATH"
@@ -13,15 +10,24 @@ PATH="$HOME/.cargo/bin:$PATH"
 PATH="/usr/local/go/bin:$PATH"
 PATH="$HOME/go/bin:$PATH"
 
+# Swift
+PATH="$HOME/swift-6.0.1/usr/bin:$PATH"
+
+export PATH=$HOME/.cache/rebar3/bin:$PATH
+
+PATH="$HOME/.local/bin:$PATH"
+PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+PATH="$HOME/.config/composer/vendor/bin:$PATH"
+PATH="$HOME/.fnm:$PATH"
+
 # Fly path
 export FLYCTL_INSTALL="$HOME/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
 
 eval "$(fnm env --use-on-cd)"
-eval "$(starship init bash)"
+# eval "$(starship init bash)"
 
 # General 
-alias wezterm='flatpak run org.wezfurlong.wezterm'
 alias ll='ls -lah --color'
 
 # PHP/Laravel
@@ -36,13 +42,14 @@ alias nah='git reset --hard HEAD; git clean -df'
 alias n='nvim'
 alias nvim-update='nvim --headless "+Lazy! sync" +qa'
 
+# Node
+alias nr='npm run'
+
 # Aviat
 alias aviat_mount='sudo mount.cifs -o user=swalker,vers=2.0 //nz-fs/common $HOME/aviat/drive/'
 alias aviat_unmount='sudo umount $HOME/aviat/drive'
 
-# LLM 
-alias ai='ollama run codellama'
-function cl() {
-	eval "ollama run codellama 'You are an expert programmer that writes simple, concise code and explanations. $1'"
-}
 
+function test_undercurl() {
+printf "\x1b[58;2;255;0;0m\x1b[4msingle\x1b[21mdouble\x1b[60mcurly\x1b[61mdotted\x1b[62mdashed\x1b[0m"singledoublecurlydotteddashed~
+}
