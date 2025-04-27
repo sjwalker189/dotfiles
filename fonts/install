@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+mkdir -p $HOME/.local/share/fonts
+cp -r patched/* $HOME/.local/share/fonts
+
+# clear the font cache
+fc-cache -f -v
