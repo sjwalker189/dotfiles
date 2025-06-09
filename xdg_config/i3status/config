@@ -12,17 +12,6 @@ tztime date {
 }
 
 tztime time {
-        format = "%I:%M %p"
+        format = "%I:%M %p "
 }
 
-volume master {
-	format = "VOL: %volume"
-	format_muted = "Muted (%volume)"
-	device = "default"
-}
-
-volume mic {
-	format = "MIC: %volume"
-	format_muted = "MIC: Off"
-	device = "default"
-}

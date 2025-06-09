@@ -9,10 +9,11 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 set $mod Mod1
+# set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:Roboto Mono 13
+font pango:Fragment Mono NerdFont 11
 
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
@@ -43,8 +44,6 @@ floating_modifier $mod
 # move tiling windows via drag & drop by left-clicking into the title bar,
 # or left-clicking anywhere into the window while holding the floating modifier.
 tiling_drag modifier titlebar
-
-# start a terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -171,9 +170,10 @@ bindsym $mod+r mode "resize"
 
 focus_follows_mouse no
 
+set $scale 1
 set $color_scheme prefer-dark
-set $wallpaper $HOME/Pictures/bg.webp
-set $browser firefox
+set $wallpaper $HOME/Pictures/Wallpapers/wallpaper.png
+set $browser brave-browser
 set $term kitty
 
 bar {
@@ -185,11 +185,13 @@ bar {
 	wheel_up_cmd nop
 	wheel_down_cmd nop
  	colors {
-        	background $bg 
-		statusline #DDDDDD
- 		separator $gray9
- 		focused_workspace #21242c #21242c  #a9d6fc
- 		inactive_workspace $bg $bg #888888
+        	background 		#16161D
+		statusline 		#DDDDDD
+ 		separator 		#54546D
+ 		focused_workspace 	#16161D #16161D  #7E9CD8
+  		inactive_workspace 	#16161D #16161D #717C7C
+ 	 	urgent_workspace   	#D27E99 #D27E99 #16161D
+        	binding_mode       	#D27E99 #D27E99 #16161D
 	}
 }
 
@@ -217,6 +219,9 @@ set $cyan_bright  "#A3CCC7"
 set $white_bright  "silver"
 
 
+default_border pixel
+hide_edge_borders both
+
 # colors
 
 # bg 	 	= window titlebar
@@ -225,35 +230,36 @@ set $white_bright  "silver"
 # indicator 	= window edge next split direction
 
 # selector		border  bg  text indicator child_border
-client.background 	$bg
-client.focused 		$gray9 $gray9 $white $gray9
-client.focused_inactive	$bg $bg $yellow $bg
-client.unfocused 	$bg $bg $gray6 $bg
-client.urgent 		$red $red $black $red $red
+# client.background 	$bg
+# client.focused 		$cyan $gray9 $white $cyan
+# client.focused_inactive	$bg $bg $yellow $bg
+# client.unfocused 	$bg $bg $gray6 $bg
+# client.urgent 		$red $red $black $red $red
 
-default_border none
-hide_edge_borders both
 
 title_align center
 for_window [class=".*"] title_format "<span>  %title</span>"
 for_window [class=".*"] title_window_icon off
-	
+
+# set $ext_display HDMI-0
 
 # Clamshell mode
-bindsym $mod+Shift+i exec xrandr --output DP-4 --off --output DP-1.2 --fb 1920x1200 --dpi 72
-bindsym $mod+Shift+Ctrl+i exec xrandr --output DP-4 --auto --output DP-1.2 --fb 1920x1200 --dpi 72
+bindsym $mod+Shift+i exec xrandr --output DP-4 --off --output $ext_display --fb 1920x1200 --dpi 96
+bindsym $mod+Shift+Ctrl+i exec xrandr --output DP-4 --auto --output $ext_display --fb 1920x1200 --dpi 96
 
 # bindsym $mod+Return exec flatpak run org.wezfurlong.wezterm
 bindsym $mod+Return exec $term
 bindsym $mod+Shift+period exec systemctl suspend
 bindsym $mod+Shift+Return exec $browser
+
 bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+g exec --no-startup-id rofi -show filebrowser
+bindsym $mod+m exec --no-startup-id rofi -show window
 
 bindsym $mod+l exec rofi -show power-menu -modi power-menu:~/dotfiles/bin/rofi-power-menu
-bindsym Mod4+l exec rofi -show power-menu -modi power-menu:~/dotfiles/bin/rofi-power-menu # lock key
+# bindsym Mod4+l exec rofi -show power-menu -modi power-menu:~/dotfiles/bin/rofi-power-menu # lock key
 
-# exec_always gsettings set org.gnome.desktop.interface scaling-factor $scale
+exec_always gsettings set org.gnome.desktop.interface scaling-factor $scale
 exec_always gsettings set org.gnome.desktop.interface color-scheme $color_scheme
 # TODO: Only start polybar if not running
 # exec_always $HOME/.config/polybar/start.sh
@@ -262,7 +268,7 @@ exec_always --no-startup-id feh --bg-scale $wallpaper
 # Disable caps lock
 exec --no-startup-id setxkbmap -layout us -option caps:escape
 exec --no-startup-id nm-applet
-exec --no-startup-id picom --fade-in-step=1 --fade-out-step=1 --xrender-sync-fence --vsync --backend=glx --dithered-present
+# exec --no-startup-id picom --fade-in-step=1 --fade-out-step=1 --xrender-sync-fence --vsync --backend=glx --dithered-present
 
 # FKeys
 # https://wiki.linuxquestions.org/wiki/XF86_keyboard_symbols
