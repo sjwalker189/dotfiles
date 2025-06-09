@@ -1,0 +1,43 @@
+
+installed:
+
+Tools:
+coreutils
+man-db
+unzip
+git
+lazygit
+yay
+zsh
+ripgrep
+fd
+
+fnm # node version manager
+curl -fsSL https://fnm.vercel.app/install | bash
+source "$HOME/.zshrc"
+fnm install 24
+
+sudo pacman -S zsh
+# logout
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+
+
+setup:
+mkdir -p $HOME/dev
+mkdir -p $HOME/work
+
+
+neovim
+
+Desktop Environment:
+hyprpaper 
+hyprlock
+hypridle
+waybar
+
+brightnessctl
+
+yay -S xdg-desktop-portal-hyprland-git
+
+set "ozone" flag in brave. need to use env variables

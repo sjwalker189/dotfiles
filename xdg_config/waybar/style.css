@@ -1,115 +1,79 @@
-/*
-*
-* Catppuccin Mocha palette
-* Maintainer: rubyowo
-*
-*/
-
-@define-color base #1e1e2e;
-@define-color mantle #181825;
-@define-color crust #11111b;
-
-@define-color text #cdd6f4;
-@define-color subtext0 #a6adc8;
-@define-color subtext1 #bac2de;
-
-@define-color surface0 #313244;
-@define-color surface1 #45475a;
-@define-color surface2 #585b70;
-
-@define-color overlay0 #6c7086;
-@define-color overlay1 #7f849c;
-@define-color overlay2 #9399b2;
-
-@define-color blue #89b4fa;
-@define-color lavender #b4befe;
-@define-color sapphire #74c7ec;
-@define-color sky #89dceb;
-@define-color teal #94e2d5;
-@define-color green #a6e3a1;
-@define-color yellow #f9e2af;
-@define-color peach #fab387;
-@define-color maroon #eba0ac;
-@define-color red #f38ba8;
-@define-color mauve #cba6f7;
-@define-color pink #f5c2e7;
-@define-color flamingo #f2cdcd;
-@define-color rosewater #f5e0dc;
-
 * {
-    border: none;
-    border-radius: 0;
-    font-family: "Noto Sans";
-    font-size: 20px;
-    min-height: 0;
+	border: none;
+	border-radius: 0;
+	font-size: 12px;
+	min-height: 0;
+	font-weight: bold;
+	font-family: "Inter";
 }
 
 window#waybar {
-    background: rgba(30, 30, 46, .65);
-    color: @subtext1;
+	background: rgba(0, 0, 0, 0.27);
+	border-radius: 0 0 3px 3px;
+	color: white;
 }
 
-#window {}
 
 #workspaces {
-    padding: 0 0;
-    margin: 0 0;
+	padding: 5px;
 }
 
 #workspaces button {
-    padding: 0 10px;
-    background: @crust;
-    color: @subtext1;
-    border: 1px solid transparent;
+	padding: 2px;
+	background: transparent;
+	color: white;
+	border-top: 2px solid transparent;
 }
 
-#workspaces button.focused {
-    background: @surface0;
-    border-color: @surface0;
+#workspaces button.active {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.35);
+	border-radius: 3px;
 }
 
+#mode {
+	background: #64727D;
+	border-bottom: 3px solid white;
+}
 
-#clock,
-#network,
-#pulseaudio,
-#tray,
-#bluetooth,
+#battery,
 #cpu,
 #memory,
+#network,
+#pulseaudio,
+#custom-spotify,
+#tray,
 #mode {
-    padding: 0 0;
-    margin: 0 8px;
+	padding: 0 3px;
+	margin: 0 2px;
 }
 
 #clock {
-    padding-right: 15px;
+	padding-right: 10px;
 }
 
-#network {
-    padding: 0 10px 0 5px;
+#battery {}
+
+#battery icon {
+	color: red;
 }
 
-#bluetooth {
-    padding: 0 5px 0 0;
-}
-
-
-#mode {
-    color: @crust;
-    background: @mauve;
-    padding: 0 15px;
-    font-weight: bold;
-}
-
-#custom-power {
-    font-size: 26px;
-}
+#battery.charging {}
 
 @keyframes blink {
-    to {
-        background-color: #ffffff;
-        color: @crust;
-    }
+	to {
+		background-color: #ffffff;
+		color: black;
+	}
+}
+
+#battery.warning:not(.charging) {
+	color: white;
+	animation-name: blink;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
 }
 
 #cpu {}
@@ -119,33 +83,15 @@ window#waybar {
 #network {}
 
 #network.disconnected {
-    background: #f53c3c;
+	background: #f53c3c;
 }
 
 #pulseaudio {}
 
 #pulseaudio.muted {}
 
-#custom-power {
-    margin: 0 0;
-    padding-right: 15px;
-}
-
 #custom-spotify {
-    font-size: 19px;
-    color: @green;
-    margin-left: 15px;
+	color: rgb(102, 220, 105);
 }
 
 #tray {}
-
-tooltip {
-    background: @crust;
-    border: 1px solid @mantle;
-    border-radius: 10px;
-    padding: 0 35px;
-}
-
-tooltip label {
-    color: @rosewatr;
-}
