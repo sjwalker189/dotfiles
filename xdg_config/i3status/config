@@ -3,15 +3,10 @@ general {
         interval = 1
 }
 
-order += "tztime date"
 order += "tztime time"
 
-
-tztime date {
-        format = "%a %d %b"
-}
-
 tztime time {
-        format = "%I:%M %p "
+        format = "%a %d %b %I:%M %p "
 }
+
 

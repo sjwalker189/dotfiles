@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+virt-viewer --connect qemu:///system win11 & 

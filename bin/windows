@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Add current user to libvirt group.  
+# This removes sudo requirement for following command
+# sudo usermod -a -G libvirt $USER
+
+virsh --connect qemu:///system start win11 &&
+  virt-viewer --connect qemu:///system win11
